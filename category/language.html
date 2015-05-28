@@ -23,7 +23,7 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/js-settimeout-scope-closure.html">JavaScript的setTimeout执行顺序、作用域和闭包</a></h1>
+                    <h1 class="entry-title"><a href="/js-settimeout-scope-closure">JavaScript的setTimeout执行顺序、作用域和闭包</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2015-03-30T00:00:00+08:00">
                 Published: 2015-03-30
@@ -95,7 +95,7 @@ D) 0
 <p>和题目中给出的方法其实是一样的。</p>
 <ul>
 <li><strong>(function() {})()</strong>，这种代码的调用方式属于立即执行。其实实现原理就是申明了一个匿名构造函数，然后通过<strong>()</strong>直接执行他，当然<strong>()</strong>中是可以直接添加参数的，这些参数都是从当前作用域中直接捕获的。</li>
-</ul><p>There are <a href="/js-settimeout-scope-closure.html#disqus_thread">comments</a>.</p>                </article>
+</ul><p>There are <a href="/js-settimeout-scope-closure#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -104,7 +104,7 @@ D) 0
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="/python-file-operating.html" rel="bookmark"
+                    <h1><a href="/python-file-operating" rel="bookmark"
                            title="Permalink to Python File Operating">Python File Operating</a></h1>
                 </header>
 
@@ -123,13 +123,13 @@ D) 0
 <hr />
 <h3>Package</h3>
 <p>We need to import some of the packages provided defaultly by python. All of it ...</p>
-                <a class="readmore" href="/python-file-operating.html">read more</a>
-<p>There are <a href="/python-file-operating.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="/python-file-operating">read more</a>
+<p>There are <a href="/python-file-operating#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="/python-print-to-file.html" rel="bookmark"
+                    <h1><a href="/python-print-to-file" rel="bookmark"
                            title="Permalink to Python Print to a File">Python Print to a File</a></h1>
                 </header>
 
@@ -145,8 +145,8 @@ D) 0
 <p>In <a href="/category/language.html">language</a>. </p>
 
 </footer><!-- /.post-info -->                <p>One day, when I was writing a program that requires a 2D map. All things are well designed and the random map is printed to the console screen. However, I found what I need is not to show my some maps, but to the computer, which to let the computer ...</p>
-                <a class="readmore" href="/python-print-to-file.html">read more</a>
-<p>There are <a href="/python-print-to-file.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="/python-print-to-file">read more</a>
+<p>There are <a href="/python-print-to-file#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
@@ -170,6 +170,7 @@ D) 0
                             <li><a href="mailto:nixingwuwei@gmail.com">mail/Yao Yiyun</a></li>
                         </ul>
                 </div><!-- /.social -->
+        <div id="disqus_thread"></div>
         </section><!-- /#extras -->
 
         <!--<footer id="contentinfo" class="body">
@@ -180,13 +181,15 @@ D) 0
 
 <!---->
 <script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = 'yyypasserbysblog';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
 </script>
 </body>
 </html>

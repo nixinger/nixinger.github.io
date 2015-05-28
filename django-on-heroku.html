@@ -24,7 +24,7 @@
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="/django-on-heroku.html" rel="bookmark"
+        <a href="/django-on-heroku" rel="bookmark"
            title="Permalink to Some tips on Deploying Django 1.7 to Heroku">Some tips on Deploying Django 1.7 to Heroku</a></h1>
     </header>
 
@@ -191,21 +191,28 @@ staticfiles/
 <ul>
 <li>Create a file naming <code>.env</code>, and type these</li>
 </ul>
-<p><code>ENV=LOCAL</code></p>
+<div class="highlight"><pre>ENV=LOCAL
+</pre></div>
+
+
 <ul>
 <li>Add one line before the modification and the final content shall be</li>
 </ul>
-<p><code>python
- if 'LOCAL' != os.environ.get('ENV', 'HEROKU'):
- # Parse database configuration from $DATABASE_URL
-    import dj_database_url
-    DATABASES['default'] = dj_database_url.config()
-    ...</code></p>
+<div class="highlight"><pre><span class="k">if</span> <span class="s">&#39;LOCAL&#39;</span> <span class="o">!=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;ENV&#39;</span><span class="p">,</span> <span class="s">&#39;HEROKU&#39;</span><span class="p">):</span>
+<span class="c"># Parse database configuration from $DATABASE_URL</span>
+   <span class="kn">import</span> <span class="nn">dj_database_url</span>
+   <span class="n">DATABASES</span><span class="p">[</span><span class="s">&#39;default&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dj_database_url</span><span class="o">.</span><span class="n">config</span><span class="p">()</span>
+   <span class="o">...</span>
+</pre></div>
+
+
 <ul>
 <li>Config the remote environment variable, type the following command under your app root folder</li>
 </ul>
-<p><code>bash
- heroku config:set ENV=HEROKU</code></p>
+<div class="highlight"><pre>heroku config:set <span class="nv">ENV</span><span class="o">=</span>HEROKU
+</pre></div>
+
+
 <p>These operation just add an environment variable to the development env and production env and make the app itself to detect the environment changes.</p>
 <h3>Use the Django admin</h3>
 <p>As we all know <strong>Django admin</strong> is a very useful module to give the developer a full view of his app. To activate this feature, we should do the following two things.</p>
@@ -217,8 +224,10 @@ staticfiles/
 <p>Create a superuser of the remote app. Heroku provide us a way to execute instructions to the remote user. Just like,</p>
 </li>
 </ol>
-<p><code>bash
- heroku run python manage.py createsuperuser</code></p>
+<div class="highlight"><pre>heroku run python manage.py createsuperuser
+</pre></div>
+
+
 <p>Then it will be instruct you to create a superuser interactively like you just do locally.</p>
 <p>You know can visit the <code>&lt;app_url&gt;/admin</code> to operate your remote database happily.</p>
     </div><!-- /.entry-content -->
@@ -242,6 +251,7 @@ staticfiles/
                             <li><a href="mailto:nixingwuwei@gmail.com">mail/Yao Yiyun</a></li>
                         </ul>
                 </div><!-- /.social -->
+        <div id="disqus_thread"></div>
         </section><!-- /#extras -->
 
         <!--<footer id="contentinfo" class="body">
@@ -252,13 +262,15 @@ staticfiles/
 
 <!---->
 <script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = 'yyypasserbysblog';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
 </script>
 </body>
 </html>

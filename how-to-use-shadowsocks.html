@@ -24,7 +24,7 @@
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="/how-to-use-shadowsocks.html" rel="bookmark"
+        <a href="/how-to-use-shadowsocks" rel="bookmark"
            title="Permalink to How to use Shadowsocks?">How to use Shadowsocks?</a></h1>
     </header>
 
@@ -151,6 +151,7 @@ ssserver -p <span class="m">8000</span> -k &lt;password&gt; -m rc4-md5 -d stop
                             <li><a href="mailto:nixingwuwei@gmail.com">mail/Yao Yiyun</a></li>
                         </ul>
                 </div><!-- /.social -->
+        <div id="disqus_thread"></div>
         </section><!-- /#extras -->
 
         <!--<footer id="contentinfo" class="body">
@@ -161,13 +162,15 @@ ssserver -p <span class="m">8000</span> -k &lt;password&gt; -m rc4-md5 -d stop
 
 <!---->
 <script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = 'yyypasserbysblog';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
 </script>
 </body>
 </html>
