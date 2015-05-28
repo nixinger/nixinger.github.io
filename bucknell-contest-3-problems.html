@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+        <meta charset="utf-8" />
+        <title>Bucknell比赛的三道题目</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">yyypasserby' blog </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="/category/algorithm.html">algorithm</a></li>
+                    <li><a href="/category/language.html">language</a></li>
+                    <li><a href="/category/project.html">project</a></li>
+                    <li><a href="/category/settings.html">settings</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/bucknell-contest-3-problems.html" rel="bookmark"
+           title="Permalink to Bucknell比赛的三道题目">Bucknell比赛的三道题目</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-03-29T00:00:00+08:00">
+                Published: 2015-03-29
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/algorithm.html">algorithm</a>. </p>
+
+</footer><!-- /.post-info -->      <p>北京时间2015年3月28日晚上9:00到12:00参加了一个由<a href="http://www.bucknell.edu/">Bucknell University</a>举办的编程比赛。在三个小时的过程中，我们队伍一共做出了8道题中的3道，得到Expert组第二名的好成绩。比赛的题目总体上不是很难，比较考验对算法的熟练程度和英文的阅读理解能力。很感谢有两位队友(沈多，仇晓逢)在比赛中的精彩发挥。</p>
+<h3>Gnash your Teeth while opening safes!</h3>
+<p>You are deep in the lair of guitar-loving Master Villain Guattery, better known as The Ax, and you’ve reached a chamber full of 16 safes. You’ve heard rumors that the plans to conquer the world with guitar playing robots that lull people to sleep before taking over the world are found in these safes. Each safe has a different number of buttons on the front numbered 1 thru n. In a dusty back corner of the room you find a note left by The Ax reminding himself that the combos are prime rings.</p>
+<p>A prime ring is a circular sequence of all numbers between 1 and n (where n is an even number) where each pair of consecutive numbers add up to a prime. This means that the first and the last number of the sequence must also add up to a prime. Each number between 1 and n appears exactly once in the sequence. All sequences start with the number 1.</p>
+<p>For example, if n is 6, 1+4 is prime and 1+6 is prime so the answer has 2 sequences. The first starts with 1 4 and the second starts with 1 6. For the first sequence 4+3 is prime then 3+2 is prime then 2+5 is prime then 5+6 is prime. We are out of numbers and 1+6 is also prime so the full sequence is 1 4 3 2 5 6. For the second sequence, 6+5 is prime then 5+2 is prime then 2+3 is prime then 3+4 is prime. We are out of numbers and 1+4 is also prime so the full sequence is 1 6 5 2 3 4.</p>
+<p>Odd numbers have no prime rings so you’ll have to find a different way to open the safes with an odd number of buttons.</p>
+<p>Your task is to figure out the safe combinations quickly before The Ax finds you. The safes with an even number of buttons may each have several prime rings but its faster than trying every possible combination.</p>
+<p><strong>Input</strong></p>
+<p>Each line of input will contain a value for n (1 &lt; n ≤ 16). The last line of input will contain the number 0. This last line should not be processed.</p>
+<p><strong>Output</strong></p>
+<p>The output of your program should list all prime ring sequences starting with 1 for the current value of n in ascending order. The output should be formatted as in the sample below. If there are no prime rings for an input then don't print anything. (9 has no prime rings).</p>
+<p><strong>Sample Input</strong></p>
+<div class="highlight"><pre>￼￼￼￼￼￼￼￼6
+8
+9
+0
+</pre></div>
+
+
+<p><strong>Output for Sample Input</strong></p>
+<div class="highlight"><pre>1 4 3 2 5 6
+1 6 5 2 3 4
+1 2 3 8 5 6 7 4
+1 2 5 8 3 4 7 6
+1 4 7 6 5 8 3 2
+1 6 7 4 3 8 5 2
+</pre></div>
+
+
+<p>题目本身就是一个回溯，但是题目的结论很有意思。也很明显，<strong>[1..n]</strong>，如果<strong>n</strong>为奇数的话，并不能找到一个序列，让任意两个相邻的数之和为质数；而如果<strong>n</strong>为偶数的话，一定存在这样的一个序列，并且不唯一。</p>
+<p>再看代码本身，很久不写这种需要自己输入输出饿题目了，一开始写也是各种不适应。输入是一个<strong>n</strong>，需要输出所有符合条件的<strong>[1..n]</strong>的序列。</p>
+<p>回溯是最容易想到的方法，实现起来应该也非常的容易。犹豫每次选择的范围是变小的。所以，我们要维护一个可以选择的区域。我使用了<strong>vector<bool></strong>进行维护，然后还需要一个临时的<strong>vector<int></strong>来维护一个临时的序列，来存储当前的序列状态，该数组中需要提前存一个<strong>1</strong>。每次向数组中添加元素的标准是，当前加入的元素可以和前面一个元素的和是一个质数，由于本题中的<strong>n</strong>最大是16，所以质数表最大只要是<strong>31(=15+16)</strong>就可以了。然后，本题中比较容易忘记的是最后一个数和1的检查，但是通过测试用例就很容易发现。</p>
+<p>在做这道题的时候，出现了一个很奇怪的问题。在本机调试的时候，编译和运行均没有问题，但是在对方的服务器上编译的时候就总是出现编译错误。最后通过对方给出的行号，定位到了居然是一个质数表的初始化错误。结果是发现对方方的的<a href="http://gcc.gnu.org/">gcc</a>还是<strong>C++98</strong>标准的，没有加入大括号的初始化标准。最后通过简单的修改，这道题就通过了，这时比赛已经进行了1个小时。</p>
+<h3>Follow your Nose while sleuthing!</h3>
+<p>Your Spy Ring has gone on a trip to rebuild the computer systems in your 20 Secret Bases worldwide. When you reach a Base, you can then contemplate which Base to visit next.</p>
+<p>Each base has between 1 and 19 easy connections to other Secret Bases. (Depending on train routes, underwater passages etc.). Director King (in charge of Headquarters) wants you to complete the entire trip as quickly as possible. He will be monitoring your progress via analysis of Twitter Feeds.</p>
+<p><strong>Input</strong></p>
+<p>Input to your program will consist of a set of Base configurations for the 20 Secret Bases and a set of Base pairs which are possible start and destination Bases.</p>
+<p>A configuration contains 19 lines describing which Bases can be reached from which other Bases. The representation avoids listing every Base interconnect twice by only listing the fact that Base x is connected to Base y when x &lt; y. Thus, the xth line contains an integer z indicating how many "higher-numbered" Bases are connected to Base x, then z distinct integers y (greater than x) describing all the Bases that Base x connects to.</p>
+<p>Line 20 contains a single integer N (1 ≤ N ≤ 100) indicating the number of Base pairs that follow. The next N lines each contain exactly two integers A and B (1 ≤ A and B ≤ 20 and A!=B) indicating the starting and ending Bases for a possible voyage.
+All the Bases are interconnected so that you can travel from each Base to each other Base eventually. (If a Base x is only connected to lower numbered Bases, line x will contains only a 0).</p>
+<p><strong>Output</strong></p>
+<p>Print the minimum number of Bases that have to be visited to get from the starting Base to the destination Base for the Base pair A and B in the input. Each line will have the form</p>
+<div class="highlight"><pre>S to D: M
+</pre></div>
+
+
+<p>where S is the starting Base, D is the destination Base, and M is the number of Bases that need to be visited in between. There is a space after the colon. Include the trip to Base D in your count so if S and D are neighboring Bases, M would be 1. Print the output for the Base pairs in the same order they were inputted.</p>
+<p><strong>Sample Input</strong></p>
+<p>￼￼￼￼A sample Secret Base map can be seen in with a line drawn between all neighboring Bases.</p>
+<div class="highlight"><pre>1 3
+2 3 4
+3 4 5 6
+1 6
+1 7
+2 12 13
+1 8
+2 9 10
+1 11
+1 11
+2 12 17
+1 14
+2 14 15
+2 15 16
+1 16
+1 19
+2 18 19
+1 20
+1 20
+5
+1 20
+2 9
+19 5
+18 19
+16 20
+</pre></div>
+
+
+<p>In this data, Base 1 connects to one Base (3) and Base 4 connects to 1 higher numbered Base (6). 4's connections to 2 and 3 are seen on the 2nd and 3rd lines. There are 5 Base pairs to consider.</p>
+<p><strong>Output for Sample Input</strong></p>
+<div class="highlight"><pre>1 to 20: 7
+2 to 9: 5
+19 to 5: 6
+18 to 19: 2
+16 to 20: 2
+</pre></div>
+
+
+<p>The minimum trip from Base 16 to Base 20 requires 2 trips; 16 to 19 and 19 to 20.</p>
+<p>这么长的一道题，其实就是想表达这是一道让你求<strong>最短路径</strong>的题。然后，感觉题目已经明显到让你感觉到这是用<a href="http://zh.wikipedia.org/wiki/%E5%BC%97%E6%B4%9B%E4%BC%8A%E5%BE%B7%E7%AE%97%E6%B3%95">Floyd算法</a>了。所以直接代码敲起就好，唯一需要注意的地方就是他的输入输出格式。</p>
+<p>Floyd算法本身的代码量很少，所以我么大概就只用了20分钟敲完，然后花了10分钟检查之后就交了。期间犯了一个很傻的错误，就是我把所有不联通的路径的值都初始化为了<strong>INT_MAX</strong>，在算法进行的过程中就产生了越界的问题。其实这样的途中，如果每条边的长度都为<strong>1</strong>的话，只要默认长度大于<strong>20</strong>即可。</p>
+<p>Floyd算法的基本流程如下：</p>
+<div class="highlight"><pre><span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="mi">20</span><span class="p">;</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">20</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;=</span> <span class="mi">20</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">];</span>
+</pre></div>
+
+
+<p>最后我们就得到了一张多源的表，之后我们就可以根据题目的输入需求找到相应的两点，根据响应的条件输出即可。</p>
+<h3>Watch you don't scratch a fellow spy with your Poison Nail!</h3>
+<p>The Spy Academy has made an offer for a lottery that will choose some number (X) of lucky people to return to the states for a recruiting tour. Your Spy Ring has been working hard and desperately wants this easy duty.
+The lottery is run by lining up all the Spy Rings and eliminating Rings by counting off the Rings from 1 to N where N is a number chosen by pulling cards off of the top of a deck. Every time N is reached, that Spy Ring falls out of the line, and counting begins again at 1 with the next Spy Ring in line. When the end of the line has been reached (with whatever number that may be), the next card on the top of the deck will be taken, and counting starts again at 1 with the first Spy Ring in the remaining line. The last X Spy Rings in line get to go home.</p>
+<p>Your Spy Ring has found a way to trade a stacked deck with the real deck just before the selection process begins. However, you will not know how many people will show up for the selection until the last minute. Your job is to write a program that will use the deck you supply and the number of Spy Rings in line that you count just before the selection process begins and know what position(s) in the line to get in to assure your Spy Ring of a trip home. You are assured that your deck will get the job done by the time the 20th card is used.</p>
+<p>A simple example with 10 Spy Rings, 2 lucky spots, and the numbers from cards 3, 5, 4, 3, 2 would show that you should get in positions 1 or 8 to go home.</p>
+<p><strong>Input</strong></p>
+<p>For each selection, you will be given a line of 22 integers. The first integer (1 &lt;= N &lt;= 50) tells how many Spy Rings will participate in the lottery. The second integer (1 &lt;= X &lt;= N) is how many lucky "home" positions will be selected. The next 20 integers are the values of the first 20 cards in the deck. Card values are interpreted to integer values between 1 and 11 inclusive. There will be a 0 on the last line to indicate the end of the input.</p>
+<p><strong>Output</strong></p>
+<p>For each input line, you are to print a list of "lucky" positions that your Spy Ring should attempt to get into.</p>
+<p><strong>Sample Input</strong></p>
+<div class="highlight"><pre>10 2 3 5 4 3 2 9 6 10 10 6 2 6 7 3 4 7 4 5 3 2 4
+47 6 11 2 7 3 4 8 5 10 7 8 3 7 4 2 3 9 10 2 5 3 0
+</pre></div>
+
+
+<p><strong>Output for Sample Input</strong></p>
+<div class="highlight"><pre>1 8
+1 3 16 23 31 47
+</pre></div>
+
+
+<p>题目的意思不是很复杂，是一道模拟。每次的输入是一行数字，一共有22个。然后第一个数字<strong>n</strong>代表<strong>[1..n]</strong>的集合，之后数字<strong>m</strong>代表最后可以剩余的数字数量。之后的<strong>20</strong>个数字表示每次删除数字的间隔。</p>
+<p>比如以第一个测试用例的第一趟删除为例：</p>
+<div class="highlight"><pre><span class="n">start</span><span class="o">:</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">10</span>
+<span class="n">when</span> <span class="n">the</span> <span class="n">removal</span> <span class="n">interval</span> <span class="o">==</span> <span class="mi">3</span><span class="o">;</span>
+<span class="n">after</span> <span class="n">delete</span><span class="o">:</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">10</span>
+</pre></div>
+
+
+<p>然后每次超过最后一个的情况下，都需要去取<strong>20</strong>个数中的下一个数。对删除后的序列再次进行操作，直到删除的结果只剩下<strong>m</strong>个为止。</p>
+<p>通过<strong>vector</strong>的<strong>erase</strong>，删除掉响应的元素，这题需要注意的地方是，如果再删除的过程中，还没有遇到最后一个的情况下，我们仍需要监控数量大于<strong>m</strong>的这个条件，不然就可能会多删掉元素。</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="/files/resume.pdf">Resume</a></li>
+                            <li><a href="/files/leetcode_algorithm.json">leetcode_algorithm.json</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://github.com/nixinger">github/nixinger</a></li>
+                            <li><a href="http://weibo.com/nixingwuwei">weibo/nixingwuwei</a></li>
+                            <li><a href="mailto:nixingwuwei@gmail.com">mail/Yao Yiyun</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <!--<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                </address>[> /#about <]
+
+        </footer>[> /#contentinfo <]-->
+
+<!---->
+<script type="text/javascript">
+    var disqus_shortname = 'yyypasserbysblog';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+        <meta charset="utf-8" />
+        <title>Apriori Algorithm</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">yyypasserby' blog </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="/category/algorithm.html">algorithm</a></li>
+                    <li><a href="/category/language.html">language</a></li>
+                    <li><a href="/category/project.html">project</a></li>
+                    <li><a href="/category/settings.html">settings</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/apriori-algorithm.html" rel="bookmark"
+           title="Permalink to Apriori Algorithm">Apriori Algorithm</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-11-24T00:00:00+08:00">
+                Published: 2014-11-24
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/algorithm.html">algorithm</a>. </p>
+
+</footer><!-- /.post-info -->      <p>在大规模数据集中寻找关系：</p>
+<ul>
+<li>频繁项集：经常出现在一块的物品的集合</li>
+<li>关联规则：暗示两种物品之间可能存在很强的关系</li>
+</ul>
+<p>如何定量地定义关系？如何定义频繁？</p>
+<p>以<strong>啤酒，尿布</strong>的故事为例，</p>
+<ul>
+<li>
+<p>支持度：数据集中包含该项集的记录所占的比例。比如一共有5条交易记录，其中4条出现了<strong>{尿布}</strong>，则尿布的支持度就为<strong>4/5</strong>。再比如，如果数据集中有3条同时出现了<strong>{尿布，啤酒}</strong>，则项集<strong>{尿布，啤酒}</strong>的支持度就为<strong>3/5</strong>。</p>
+</li>
+<li>
+<p>置信度：针对关联规则定义。我们现在知道了<strong>{尿布}</strong>的支持度为<strong>4/5</strong>，<strong>{尿布，啤酒}</strong>的支持度为<strong>3/5</strong>，呢么<strong>{尿布}-&gt;{啤酒}</strong>的关联规则的可信度可以被定义为<strong>“支持度({尿布，啤酒})/支持度({尿布})”</strong>，也就是<strong>3/4 = 0.75</strong>。这个更容易理解的表示方法是，对着这条推出式，对于我们数据集中75%的规则都适用。</p>
+</li>
+</ul>
+<p>假设我们要通过Apriori算法计算出数据集中的关联规则，我们就可能要计算所有商品所组成集合的所有子集，如果我们只出售100件商品，我们就可能要计算1.26 * 10^30中可能的项集组合。对于现代计算机而言，需要很长时间才能运行完成。</p>
+<h4>Apriori原理</h4>
+<blockquote>
+<p>如果某个项集是频繁的，那么他的所有子集也是频繁的。
+相反，如果一个项集是非频繁项集，那么他的所有超集都是非频繁的。</p>
+</blockquote>
+<p><img alt="apriori" src="/images/apriori/apriori.jpg" /></p>
+<p>利用Apriori原理，我们可以减少大量的支持度计算，避免项集数目的指数级增长，从而在合理的时间内计算出频繁项集。这个原理也会在之后的求解关联规则的方法中用到。</p>
+<hr />
+<h4>算法表述</h4>
+<p>首先我们需要一些数据，我们将我们所用到的商品编上号，使用数字在算法中表示：</p>
+<ol>
+<li>豆奶</li>
+<li>莴苣</li>
+<li>尿布</li>
+<li>葡萄酒</li>
+<li>橙汁</li>
+</ol>
+<p>然后我们有这样4条数据：</p>
+<ol>
+<li>[1,3,4] ==&gt; [豆奶，尿布，葡萄酒]</li>
+<li>[2,3,5] ==&gt; [莴苣，尿布，橙汁]</li>
+<li>[1,2,3,5] ==&gt; [豆奶，莴苣，尿布，橙汁]</li>
+<li>[2,5] ==&gt; [莴苣，橙汁]</li>
+</ol>
+<h5>发现频繁项集</h5>
+<p>首先我们所获得的数据集中只有记录：所以我们需要先获得单个商品的集合：</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">createC1</span><span class="p">(</span><span class="n">dataSet</span><span class="p">):</span>
+    <span class="n">C1</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">transaction</span> <span class="ow">in</span> <span class="n">dataSet</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">transaction</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="ow">in</span> <span class="n">C1</span><span class="p">:</span>
+                <span class="n">C1</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">item</span><span class="p">])</span>
+    <span class="n">C1</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">,</span> <span class="n">C1</span><span class="p">)</span>
+</pre></div>
+
+
+<p>这个集合主要有两个作用，第一取得第一次迭代计算支持度的集合，这些集合中的单个元素均需要计算支持度，并且在后续的计算中，利用Apriori原理，如果C1中的单元素集合无法符合最小支持度的要求，之后由其组成的Cn集合就不用再计算其支持度。而第二个作用，我们需要知道这次计算中所有相关的商品，即获得商品的全集。</p>
+<p>在计算完C1过后我们就需要对已有的集合进行支持度的计算了，我们使用以下scanD函数对已有的集合进行支持度计算：</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">scanD</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">Ck</span><span class="p">,</span> <span class="n">minSupport</span><span class="p">):</span>
+    <span class="n">ssCnt</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">tid</span> <span class="ow">in</span> <span class="n">D</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">can</span> <span class="ow">in</span> <span class="n">Ck</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">can</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">tid</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">ssCnt</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">can</span><span class="p">):</span><span class="n">ssCnt</span><span class="p">[</span><span class="n">can</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span> <span class="n">ssCnt</span><span class="p">[</span><span class="n">can</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">numItems</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">D</span><span class="p">))</span>
+    <span class="n">retList</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">supportData</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ssCnt</span><span class="p">:</span>
+        <span class="n">support</span> <span class="o">=</span> <span class="n">ssCnt</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">/</span> <span class="n">numItems</span>
+        <span class="k">if</span> <span class="n">support</span> <span class="o">&gt;=</span> <span class="n">minSupport</span><span class="p">:</span>
+            <span class="n">retList</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="n">supportData</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">support</span>
+
+    <span class="k">return</span> <span class="n">retList</span><span class="p">,</span> <span class="n">supportData</span>
+</pre></div>
+
+
+<p>该函数的输入参数有数据集D，本次需要使用到的所有候选集，以及我们所定的最小支持度。返回的是本次计算中支持度在最小支持度之上的所有候选集的集合。还会返回所有的计算过支持度的候选集以备之后如果需要我们去挖掘频繁项集之间的关联规则。</p>
+<p>之后我们需要去计算下一层的候选集的支持度，我们所需要做的就是用过上一层所用到的候选项集进行合并，我们用到了aprioriGen这个函数来完成这次工作：</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">aprioriGen</span><span class="p">(</span><span class="n">Lk</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="n">retList</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">lenLk</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Lk</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lenLk</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">lenLk</span><span class="p">):</span>
+            <span class="n">L1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Lk</span><span class="p">[</span><span class="n">i</span><span class="p">])[:</span><span class="n">k</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">L2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Lk</span><span class="p">[</span><span class="n">j</span><span class="p">])[:</span><span class="n">k</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">L1</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="n">L2</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">L1</span> <span class="o">==</span> <span class="n">L2</span><span class="p">:</span>
+                <span class="n">retList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Lk</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">|</span> <span class="n">Lk</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">retList</span>
+</pre></div>
+
+
+<p>这个函数所需要的一个是上一层的所有符合最小支持度的集合，另一个是本层需要的元素个数。返回的是这一层需要计算支持度的所有候选集。</p>
+<p>这样我们基本上就可以使用Apriori算法进行对数据集中频繁项集的挖掘工作了：</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">apriori</span><span class="p">(</span><span class="n">dataSet</span><span class="p">,</span> <span class="n">minSupport</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
+    <span class="n">C1</span> <span class="o">=</span> <span class="n">createC1</span><span class="p">(</span><span class="n">dataSet</span><span class="p">)</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">set</span><span class="p">,</span> <span class="n">dataSet</span><span class="p">)</span>
+    <span class="n">L1</span><span class="p">,</span> <span class="n">supportData</span> <span class="o">=</span> <span class="n">scanD</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">C1</span><span class="p">,</span> <span class="n">minSupport</span><span class="p">)</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="n">L1</span><span class="p">]</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">Ck</span> <span class="o">=</span> <span class="n">aprioriGen</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">2</span><span class="p">],</span> <span class="n">k</span><span class="p">)</span>
+        <span class="n">Lk</span><span class="p">,</span> <span class="n">supK</span> <span class="o">=</span> <span class="n">scanD</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">Ck</span><span class="p">,</span> <span class="n">minSupport</span><span class="p">)</span>
+        <span class="n">supportData</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">supK</span><span class="p">)</span>
+        <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Lk</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">L</span><span class="p">,</span> <span class="n">supportData</span>
+</pre></div>
+
+
+<p>首先我们使用createC1函数计算出初始候选项集，然后我们利用scanD函数计算出初始候选项集的支持度，然后我们通过一个while循环对现有的候选项集的数量进行判断，如果在本次计算过后候选项集的个数已经为0个，那么之后的计算就不必要了，因为通过Apriori原理，我们可以肯定之后的所有项集均不为频繁项集。我们在昨晚这个简单的判定之后，我们可以通过aprioriGen函数对已有的项集进行下一代项集的计算，然后继续通过scanD函数对该代的候选项集进行支持度计算及筛选，并且将所有的支持度有关信息更新到supportData字典，并将该代的所有频繁项集以列表的形式加入到L中。这样我们就获得了所有的可以被发掘的频繁项集。</p>
+<h5>挖掘关联规则</h5>
+<p>接下来，我们就可以开始挖掘关联规则了。首先我们需要一个计算置信度的函数，只有符合我们所确定的最小置信度的关联规则才是我们需要的。</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">calcConf</span><span class="p">(</span><span class="n">freqSet</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">supportData</span><span class="p">,</span> <span class="n">brl</span><span class="p">,</span> <span class="n">minConf</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">):</span>
+    <span class="n">pruneH</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">conseq</span> <span class="ow">in</span> <span class="n">H</span><span class="p">:</span>
+        <span class="n">conf</span> <span class="o">=</span> <span class="n">supportData</span><span class="p">[</span><span class="n">freqSet</span><span class="p">]</span> <span class="o">/</span> <span class="n">supportData</span><span class="p">[</span><span class="n">freqSet</span> <span class="o">-</span> <span class="n">conseq</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">conf</span> <span class="o">&gt;=</span> <span class="n">minConf</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">freqSet</span> <span class="o">-</span> <span class="n">conseq</span><span class="p">,</span> <span class="s">&#39;---&gt;&#39;</span><span class="p">,</span> <span class="n">conseq</span><span class="p">,</span> <span class="s">&#39;conf:&#39;</span><span class="p">,</span> <span class="n">conf</span>
+            <span class="n">brl</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">freqSet</span> <span class="o">-</span> <span class="n">conseq</span><span class="p">,</span> <span class="n">conseq</span><span class="p">,</span> <span class="n">conf</span><span class="p">))</span>
+            <span class="n">pruneH</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conseq</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pruneH</span>
+</pre></div>
+
+
+<p>calcConf函数给出了计算置信度的函数，该函数有5个输入参数，freqSet主要的作用是目标的频繁项集，H为该目标项集的本次计算中位于右侧推导位置的项集，这里的选择很多，我们需要一个递归的函数才能更好地展现这个过程。后面的supportData就是我们之前在计算频繁项集的过程中所附加产生的每一个项集的支持度数据。brl是用来传入来统计所有在最小置信度的关联规则的。最后一个minConf即为我们所定的最小置信度。</p>
+<p>不知道这里的H大家理解了没有，这里H为需要在关联规则右侧出现的推导项，那么我们为什么需要这个作为函数的输入参数呢？
+我先给出置信度的定义：</p>
+<blockquote>
+<p>置信度：针对关联规则定义。我们现在知道了<strong>{尿布}</strong>的支持度为<strong>4/5</strong>，<strong>{尿布，啤酒}</strong>的支持度为<strong>3/5</strong>，呢么<strong>{尿布}-&gt;{啤酒}</strong>的关联规则的可信度可以被定义为<strong>“支持度({尿布，啤酒})/支持度({尿布})”</strong>，也就是<strong>3/4 = 0.75</strong>。这个更容易理解的表示方法是，对着这条推出式，对于我们数据集中75%的规则都适用。</p>
+</blockquote>
+<p>我们计算关联规则的基础是这样的：我们首先要保证这条关联规则中所有出现的项所组成的集合是在整个数据中有一定数量基础的，如果这个集合在数据集中所出现的次数很少，但是偶尔的一次机会，我们发现这个关联规则正好成立，那么纵然其置信度很高，甚至为100%，但是我们依旧无法相信其为真，因为他实在太偶然了，我们必须去发掘那些有普遍性的规则。</p>
+<p><strong>所以我们一定是在频繁项集中来考虑可能存在的关联规则的。</strong></p>
+<p>那我们需要在这些频繁项集中，挖掘关联规则，我们为什么不以等式左边的单个项集作为目标，而是要把右边可能为不同数量的项集作为目标呢？<strong>即我们为什么不选择看起来更加简单的能够获得的分母上的单个元素，而去考虑更加复杂的可能出现多项的去除的集合部分。</strong></p>
+<p>~~这是因为如果我们使用所有频繁项集中的每个项作为目标来写程序，算法的复杂度就太大了，这个和我们不适用apriori原理来计算所有的接下来的集合是一样的，但是如果我们使用右边的项集作为目标的话，我们就可以利用之前已经写好的aprioriGen函数来生成下一层需要在右边出现的项集了。~~</p>
+<p>这个作为一个问题问老师吧！
+说法不是很对，我也没有理解，复杂度是一样的，并且左侧也可能会出现多项项集。</p>
+<p>我好像又知道了。</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">rulesFromConseq</span><span class="p">(</span><span class="n">freqSet</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">supportData</span><span class="p">,</span> <span class="n">brl</span><span class="p">,</span> <span class="n">minConf</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">freqSet</span><span class="p">)</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">Hmp1</span> <span class="o">=</span> <span class="n">aprioriGen</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">Hmp1</span> <span class="o">=</span> <span class="n">calcConf</span><span class="p">(</span><span class="n">freqSet</span><span class="p">,</span> <span class="n">Hmp1</span><span class="p">,</span> <span class="n">supportData</span><span class="p">,</span> <span class="n">brl</span><span class="p">,</span> <span class="n">minConf</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">Hmp1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">rulesFromConseq</span><span class="p">(</span><span class="n">freqSet</span><span class="p">,</span> <span class="n">Hmp1</span><span class="p">,</span> <span class="n">supportData</span><span class="p">,</span> <span class="n">brl</span><span class="p">,</span> <span class="n">minConf</span><span class="p">)</span>
+</pre></div>
+
+
+<p>这里给出的函数就是我们遇到大于两项的频繁项集的处理方法。输入的参数与calcConf函数的参数相同，我们会先判断需要减去的项集的长度是否小于给出的频繁项集的长度，因为如果已经等于或者甚至已经超过了，说明我们对该频繁项集已经挖掘完毕了。然后如果我们荏苒能够挖掘出其他可能的关联规则的话，我们就是用aprioriGen的函数计算需要在右侧出现的大于一项的项集。然后对这些项集进行支持度的计算。最后如果返回的剩余的需要被减去的项集数量大于1，则继续发掘可能的关联规则。</p>
+<p>自此，所有的关联规则发掘完成。</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="/files/resume.pdf">Resume</a></li>
+                            <li><a href="/files/leetcode_algorithm.json">leetcode_algorithm.json</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://github.com/nixinger">github/nixinger</a></li>
+                            <li><a href="http://weibo.com/nixingwuwei">weibo/nixingwuwei</a></li>
+                            <li><a href="mailto:nixingwuwei@gmail.com">mail/Yao Yiyun</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <!--<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                </address>[> /#about <]
+
+        </footer>[> /#contentinfo <]-->
+
+<!---->
+<script type="text/javascript">
+    var disqus_shortname = 'yyypasserbysblog';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

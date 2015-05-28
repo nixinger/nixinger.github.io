@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+        <meta charset="utf-8" />
+        <title>yyypasserby' blog - [c++]</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">yyypasserby' blog </a></h1>
+                <nav><ul>
+                    <li><a href="/category/algorithm.html">algorithm</a></li>
+                    <li><a href="/category/language.html">language</a></li>
+                    <li><a href="/category/project.html">project</a></li>
+                    <li><a href="/category/settings.html">settings</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/finding-nums-in-young-matrix.html">在Young矩阵下的高效查询</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2015-04-01T00:00:00+08:00">
+                Published: 2015-04-01
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/algorithm.html">algorithm</a>. </p>
+<p>tags: <a href="/tag/c.html">[c++]</a> </p>
+</footer><!-- /.post-info --><p>一道在<a href="http://www.qingting.fm/">蜻蜓FM</a>面试的时候，出的算法题。题目是让在<strong>Young氏矩阵</strong>中查询一个数，并把他们的坐标都返回。</p>
+<blockquote>
+<p>一个m x n的Young氏矩阵（Young tableau）是一个m x n的矩阵，其中每一行的数据都从左到右排序，每一列的数据都从上到下排序。Young氏矩阵中可能会有一些∞数据项，表示不存在的元素。所以，Young氏矩阵可以用来存放 <strong>r ≦ mn</strong> 个有限的数。</p>
+</blockquote>
+<p>在面试的时候，我只想到了大致的思路，并没有写出完整的程序。之后思考了下，当时的思路还不够完整，许多方面都没有考虑到。接下来，我讲给出我之后想通了的两种解法。</p>
+<h3>二分查找</h3>
+<p>题目很明显是可以用二分查找来做的，但是关键是如何二分。最先想到的合理方式是，通过<strong>左对角线</strong>找到的中点<strong>arr[n / 2][n / 2]</strong>，可以将矩阵分为<strong>4</strong>个部分。</p>
+<p>如果<strong>target</strong>小于<strong>arr[n / 2][n / 2]</strong>，那么我们可以排除的矩阵的后<strong>1 / 4</strong>的部分。之后留给我们是剩下的<strong>3 / 4</strong>，我们应该如何处理呢？这个也是我面试的时候没有想清楚的。</p>
+<p>如果我们仍然把剩下的部分当做一个整体，那么我们处理起来就会有一些问题，因为我们并不能用已有的知识来进行进一步的优化。如果我们将剩下的这个图形拆解开来会不会有更好的效果呢？假设对于一个矩阵，我们去掉的是右下方的<strong>1 / 4</strong>(下图中的黄色部分)，我们将剩下的图形当做两个长方形来看待。</p>
+<p><img alt="young_matrix_rectangle" src="{{" title="site.baseurl }}/images/young_matrix/youngMatrixRectangle.jpg" /></p>
+<p>这两个长方形也完全符合<strong>Young氏矩阵</strong>的概念。所以我们依旧可以用上述方法来继续求解。</p>
+<p>如果<strong>target</strong>大于<strong>arr[n / 2][n / 2]</strong>，同理我们使用另外的两个长方形进行求解。</p>
+<p>如果相等的话，首先将当前元素的位置加入最后的解集，继续找的范围是左下方的矩阵和右上方的矩阵(严格递增)。</p>
+<p>但是在求出结果后，我们会发现有一些元素的位置会重复出现在最后的位置中，并且没有什么特别的规律。所以这里采用了老土的<strong>set</strong>去重，希望如果有想法的可以在我的博客下留言。</p>
+<div class="highlight"><pre><span class="k">using</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">vi</span> <span class="o">=</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">vvi</span> <span class="o">=</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">vi</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">pos</span><span class="o">&gt;</span> <span class="n">findingNumInYoungMatrix</span><span class="p">(</span><span class="n">vvi</span> <span class="o">&amp;</span><span class="n">map</span><span class="p">,</span> <span class="kt">int</span> <span class="n">target</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">;</span>
+        <span class="n">vector</span><span class="o">&lt;</span><span class="n">pos</span><span class="o">&gt;</span> <span class="n">ret</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">((</span><span class="n">height</span> <span class="o">=</span> <span class="n">map</span><span class="p">.</span><span class="n">size</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">((</span><span class="n">width</span>  <span class="o">=</span> <span class="n">map</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">size</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+        <span class="n">set</span><span class="o">&lt;</span><span class="n">pos</span><span class="o">&gt;</span> <span class="n">t</span><span class="p">;</span>
+        <span class="n">worker</span><span class="p">(</span><span class="n">map</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">make_pair</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">make_pair</span><span class="p">(</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">));</span>
+        <span class="k">return</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">pos</span><span class="o">&gt;</span> <span class="p">{</span> <span class="n">t</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">t</span><span class="p">.</span><span class="n">end</span><span class="p">()</span> <span class="p">};</span>
+    <span class="p">}</span>
+
+    <span class="kt">void</span> <span class="n">worker</span><span class="p">(</span><span class="n">vvi</span> <span class="o">&amp;</span><span class="n">map</span><span class="p">,</span> <span class="kt">int</span> <span class="n">target</span><span class="p">,</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">pos</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">ret</span><span class="p">,</span> <span class="n">pos</span> <span class="n">lt</span><span class="p">,</span> <span class="n">pos</span> <span class="n">rb</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">lt</span><span class="p">.</span><span class="n">first</span> <span class="o">&gt;</span> <span class="n">rb</span><span class="p">.</span><span class="n">first</span> <span class="o">||</span> <span class="n">lt</span><span class="p">.</span><span class="n">second</span> <span class="o">&gt;</span> <span class="n">rb</span><span class="p">.</span><span class="n">second</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+        <span class="n">pos</span> <span class="n">mid</span> <span class="o">=</span> <span class="n">make_pair</span><span class="p">((</span><span class="n">lt</span><span class="p">.</span><span class="n">first</span> <span class="o">+</span> <span class="n">rb</span><span class="p">.</span><span class="n">first</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">lt</span><span class="p">.</span><span class="n">second</span> <span class="o">+</span> <span class="n">rb</span><span class="p">.</span><span class="n">second</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+        <span class="kt">int</span> <span class="n">mid_val</span> <span class="o">=</span> <span class="n">map</span><span class="p">[</span><span class="n">mid</span><span class="p">.</span><span class="n">first</span><span class="p">][</span><span class="n">mid</span><span class="p">.</span><span class="n">second</span><span class="p">];</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">target</span> <span class="o">==</span> <span class="n">mid_val</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">ret</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">mid</span><span class="p">);</span>
+            <span class="n">worker</span><span class="p">(</span><span class="n">map</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">make_pair</span><span class="p">(</span><span class="n">mid</span><span class="p">.</span><span class="n">first</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">lt</span><span class="p">.</span><span class="n">second</span><span class="p">),</span> <span class="n">make_pair</span><span class="p">(</span><span class="n">rb</span><span class="p">.</span><span class="n">first</span><span class="p">,</span> <span class="n">mid</span><span class="p">.</span><span class="n">second</span> <span class="o">-</span> <span class="mi">1</span><span class="p">));</span>  
+            <span class="n">worker</span><span class="p">(</span><span class="n">map</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">make_pair</span><span class="p">(</span><span class="n">lt</span><span class="p">.</span><span class="n">first</span><span class="p">,</span> <span class="n">mid</span><span class="p">.</span><span class="n">second</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">make_pair</span><span class="p">(</span><span class="n">mid</span><span class="p">.</span><span class="n">first</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">rb</span><span class="p">.</span><span class="n">second</span><span class="p">));</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">target</span> <span class="o">&gt;</span> <span class="n">mid_val</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">worker</span><span class="p">(</span><span class="n">map</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">make_pair</span><span class="p">(</span><span class="n">mid</span><span class="p">.</span><span class="n">first</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">lt</span><span class="p">.</span><span class="n">second</span><span class="p">),</span> <span class="n">rb</span><span class="p">);</span>  
+            <span class="n">worker</span><span class="p">(</span><span class="n">map</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">make_pair</span><span class="p">(</span><span class="n">lt</span><span class="p">.</span><span class="n">first</span><span class="p">,</span> <span class="n">mid</span><span class="p">.</span><span class="n">second</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">rb</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+            <span class="n">worker</span><span class="p">(</span><span class="n">map</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">make_pair</span><span class="p">(</span><span class="n">mid</span><span class="p">.</span><span class="n">first</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">rb</span><span class="p">.</span><span class="n">second</span><span class="p">));</span>
+            <span class="n">worker</span><span class="p">(</span><span class="n">map</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">make_pair</span><span class="p">(</span><span class="n">rb</span><span class="p">.</span><span class="n">first</span><span class="p">,</span> <span class="n">mid</span><span class="p">.</span><span class="n">second</span> <span class="o">-</span> <span class="mi">1</span><span class="p">));</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+
+
+<h3>右上角比较</h3>
+<p>这个解法是我的一个同学在听完这个题目后和我说的。我们可以通过用<strong>target</strong>和右上角的元素进行比较。如果<strong>target</strong>小于当前元素的话，我们就可以去掉竖排，因为竖排的元素一定大于当前元素；反之，<strong>target</strong>大于当前元素，我们可以同理去掉横排的元素。要是如果相等的话，加入解集，并且将两排同时去掉。</p>
+<p>感觉整个程序的逻辑应该比上面的要简单一些，但是在一些答的数据集中，应该还是上面这种做法效率更加高，因为每次去掉的元素至少是<strong>1 / 4</strong>。</p><p>There are <a href="/finding-nums-in-young-matrix.html#disqus_thread">comments</a>.</p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="/files/resume.pdf">Resume</a></li>
+                            <li><a href="/files/leetcode_algorithm.json">leetcode_algorithm.json</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://github.com/nixinger">github/nixinger</a></li>
+                            <li><a href="http://weibo.com/nixingwuwei">weibo/nixingwuwei</a></li>
+                            <li><a href="mailto:nixingwuwei@gmail.com">mail/Yao Yiyun</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <!--<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                </address>[> /#about <]
+
+        </footer>[> /#contentinfo <]-->
+
+<!---->
+<script type="text/javascript">
+    var disqus_shortname = 'yyypasserbysblog';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+        <meta charset="utf-8" />
+        <title>yyypasserby' blog - language</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">yyypasserby' blog </a></h1>
+                <nav><ul>
+                    <li><a href="/category/algorithm.html">algorithm</a></li>
+                    <li class="active"><a href="/category/language.html">language</a></li>
+                    <li><a href="/category/project.html">project</a></li>
+                    <li><a href="/category/settings.html">settings</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/js-settimeout-scope-closure.html">JavaScript的setTimeout执行顺序、作用域和闭包</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2015-03-30T00:00:00+08:00">
+                Published: 2015-03-30
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/language.html">language</a>. </p>
+
+</footer><!-- /.post-info --><p>2015的腾讯校招笔试中考察了这样一道前端题。</p>
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">function</span> <span class="nx">one</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">cnt</span> <span class="o">+=</span> <span class="nx">i</span><span class="p">;</span>
+        <span class="p">},</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">two</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">consolo</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">cnt</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">one</span><span class="p">();</span>
+<span class="nx">setTimeout</span><span class="p">(</span><span class="nx">two</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</pre></div>
+
+
+<p>问题是最后打印出来的数字是多少？</p>
+<p>有以下几个选项。</p>
+<div class="highlight"><pre>A) 45
+B) 55
+C) 100
+D) 0
+</pre></div>
+
+
+<h3>有关题目求解</h3>
+<p>在考试的时候，我选择的是<strong>A)和D)</strong>，最后这里两个答案都是不正确的。正确的答案是<strong>C)</strong>。</p>
+<p>首先<strong>setTimeout</strong>，是一个定时器函数，如果会在指定的毫秒数之后执行该语句。而这个函数如果以<strong>setTimeout(function, 0)</strong>的方式执行后，由于js解释器的特性，会将控制权交出，执行后面的语句。并且将事件安排到上下文的最后去执行。类似做了一个将<strong>队首元素</strong>转移到<strong>队尾</strong>去执行。</p>
+<p>那么这道题中，可以看到，所有和<strong>cnt</strong>变量有关的语句都调用了<strong>setTimeout</strong>这条语句。理论上和字面上解释应该是一样的咯，所以答案应该是45才对啊。</p>
+<p>但是<strong>i</strong>这个变量随着<strong>setTimeout</strong>的出现而改变了，之前如果没有<strong>setTimeout</strong>的情况下，执行<strong>function</strong>内部的语句，<strong>cnt</strong>变量所增加的值是<strong>i</strong>的字面量。但是此时<strong>i</strong>增加到<strong>10</strong>之后，再执行的<strong>cnt += i</strong>。所以，对于<strong>cnt</strong>来说，他现在所取到的<strong>i</strong>其实是循环结束之后的<strong>i</strong>，所以但等于以<strong>i = 10</strong>的情况下，加了10次。</p>
+<p>而最后<strong>console.log()</strong>也是由<strong>setTimeout</strong>调用的，所以也放到了队尾进行执行。最终的结果就是<strong>100</strong>。</p>
+<h3>有关解决方案</h3>
+<p>如果我们这段代码的目标是为了得到<strong>cnt = 45</strong>的话，我们应该怎么做呢？</p>
+<p>因为之前每个值在暂缓执行的过程中，所存的值都是当前变量<strong>i</strong>的引用，所以我们可以捕获当前的索引值，然后保存在当前作用域中。那么在之后的调用中，我们所调用的<strong>i</strong>就不再是引用了，而是本地作用域中的那个局部变量。</p>
+<div class="highlight"><pre><span class="kd">function</span> <span class="nx">one</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">setTimeout</span><span class="p">((</span><span class="kd">function</span><span class="p">(</span><span class="nx">j</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">cnt</span> <span class="o">+=</span> <span class="nx">j</span><span class="p">;</span>
+        <span class="p">})(</span><span class="nx">i</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3>Tips</h3>
+<ul>
+<li><strong>console.log()</strong>可以添加多个参数，基本上打印出来的结果，就和Python里面的print函数是一样的，通过<strong>,</strong>隔开。</li>
+<li><strong>setTimeout(console.log(1), 0);</strong> 如果直接使用字面量，是JS中不被推荐的。这样的话，字面量是直接执行的，所以其实并没有做到<strong>setTimeout</strong>的作用。那么他是讲什么东西放到了上下文队列的最后呢？一个<strong>函数地址</strong>。正确的写法应该是通过匿名函数，这种写法也是被推荐的：</li>
+</ul>
+<div class="highlight"><pre><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">cnt</span><span class="p">);</span>
+<span class="p">},</span> <span class="mi">0</span><span class="p">);</span>
+</pre></div>
+
+
+<p>和题目中给出的方法其实是一样的。</p>
+<ul>
+<li><strong>(function() {})()</strong>，这种代码的调用方式属于立即执行。其实实现原理就是申明了一个匿名构造函数，然后通过<strong>()</strong>直接执行他，当然<strong>()</strong>中是可以直接添加参数的，这些参数都是从当前作用域中直接捕获的。</li>
+</ul><p>There are <a href="/js-settimeout-scope-closure.html#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/python-file-operating.html" rel="bookmark"
+                           title="Permalink to Python File Operating">Python File Operating</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-11-24T00:00:00+08:00">
+                Published: 2014-11-24
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/language.html">language</a>. </p>
+
+</footer><!-- /.post-info -->                <p>Python's file operating is so powerful that you may use python to operate your file system as shell did. In the following topics, I will do some introduction of python's file operations.</p>
+<hr />
+<h3>Package</h3>
+<p>We need to import some of the packages provided defaultly by python. All of it ...</p>
+                <a class="readmore" href="/python-file-operating.html">read more</a>
+<p>There are <a href="/python-file-operating.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/python-print-to-file.html" rel="bookmark"
+                           title="Permalink to Python Print to a File">Python Print to a File</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-11-24T00:00:00+08:00">
+                Published: 2014-11-24
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/language.html">language</a>. </p>
+
+</footer><!-- /.post-info -->                <p>One day, when I was writing a program that requires a 2D map. All things are well designed and the random map is printed to the console screen. However, I found what I need is not to show my some maps, but to the computer, which to let the computer ...</p>
+                <a class="readmore" href="/python-print-to-file.html">read more</a>
+<p>There are <a href="/python-print-to-file.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="/files/resume.pdf">Resume</a></li>
+                            <li><a href="/files/leetcode_algorithm.json">leetcode_algorithm.json</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://github.com/nixinger">github/nixinger</a></li>
+                            <li><a href="http://weibo.com/nixingwuwei">weibo/nixingwuwei</a></li>
+                            <li><a href="mailto:nixingwuwei@gmail.com">mail/Yao Yiyun</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <!--<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                </address>[> /#about <]
+
+        </footer>[> /#contentinfo <]-->
+
+<!---->
+<script type="text/javascript">
+    var disqus_shortname = 'yyypasserbysblog';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

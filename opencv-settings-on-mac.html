@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+        <meta charset="utf-8" />
+        <title>OpenCV settings on Mac</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">yyypasserby' blog </a></h1>
+                <nav><ul>
+                    <li><a href="/category/algorithm.html">algorithm</a></li>
+                    <li><a href="/category/language.html">language</a></li>
+                    <li><a href="/category/project.html">project</a></li>
+                    <li class="active"><a href="/category/settings.html">settings</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/opencv-settings-on-mac.html" rel="bookmark"
+           title="Permalink to OpenCV settings on Mac">OpenCV settings on Mac</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-11-24T00:00:00+08:00">
+                Published: 2014-11-24
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/settings.html">settings</a>. </p>
+
+</footer><!-- /.post-info -->      <h3>Install homebrew</h3>
+<p>Type the following directions to install <strong>homebrew</strong></p>
+<div class="highlight"><pre>ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;
+</pre></div>
+
+
+<h3>Install OpenCV</h3>
+<p>After installing homebrew, we just need to type the following direction to install <strong>OpenCV</strong></p>
+<div class="highlight"><pre>brew install opencv
+</pre></div>
+
+
+<p>It will not always works well. There may be kind of mistakes and I just encounter the such in the process. I just could not finish the installation of <strong>libpng</strong>, and I found that it was prevented by the man's trigger. The file <code>man5</code> has been already allocated by other programs with the permission <strong>admin</strong>, so I used <code>sudo chown $USER man5</code> to solve this problem. And then I went on with the instruction of <code>brew link libpng</code>.</p>
+<p>Here, OpenCV has already been installed.</p>
+<h3>Settings and make a demo</h3>
+<p>Now All the dylibs is in /usr/local/lib, we need add them to our projects.</p>
+<ul>
+<li>First, we new a command line project in Xcode.</li>
+<li>Second, we left tap the <strong>Project</strong> and choose <strong>Add Files to ...</strong>.</li>
+</ul>
+<p><img alt="addFiles" src="{{" title="site.baseurl }}/images/opencv/addFiles.png" /></p>
+<ul>
+<li>Thirdly, we type <code>Command + Shift + G</code> to type the directory of our dylibs as above <code>/usr/local/lib</code>.</li>
+</ul>
+<p><img alt="addLibs" src="{{" title="site.baseurl }}/images/opencv/addLibs.png" /></p>
+<ul>
+<li>Fourthly, choose all the dylibs under this directory and click <strong>Add</strong>.</li>
+<li>Fifthly, we click the settings and choose <strong>Target</strong>, select <strong>All</strong> option on the right side and type <strong>Header Search Path</strong> in the search. We just add these two lines in this section.</li>
+</ul>
+<div class="highlight"><pre>/usr/local/include
+/usr/local/include/opencv
+</pre></div>
+
+
+<ul>
+<li>Likewise, we also add <code>/usr/local/lib</code> to the <strong>Library Search Path</strong></li>
+<li>Finally, type the following code in your <strong>main.cpp</strong>, see how it works!</li>
+</ul>
+<div class="highlight"><pre><span class="cp">#include &lt;opencv2/opencv.hpp&gt;</span>
+<span class="cp">#include &lt;opencv2/highgui/highgui.hpp&gt;</span>
+<span class="cp">#include &lt;opencv/cvaux.hpp&gt;</span>
+
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">cv</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+
+    <span class="n">VideoCapture</span> <span class="n">cap</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">cap</span><span class="p">.</span><span class="n">isOpened</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">Mat</span> <span class="n">edges</span><span class="p">;</span>
+    <span class="n">namedWindow</span><span class="p">(</span><span class="s">&quot;Source&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="k">for</span><span class="p">(;;)</span> <span class="p">{</span>
+        <span class="n">Mat</span> <span class="n">frame</span><span class="p">;</span>
+        <span class="n">cap</span> <span class="o">&gt;&gt;</span> <span class="n">frame</span><span class="p">;</span>
+        <span class="c1">//resize(frame, frame, Size(320, 320));</span>
+
+        <span class="n">pyrDown</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">frame</span><span class="p">);</span>
+        <span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">CV_BGR2GRAY</span><span class="p">);</span>
+        <span class="n">GaussianBlur</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">Size</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">);</span>
+        <span class="n">imshow</span><span class="p">(</span><span class="s">&quot;Source&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="/files/resume.pdf">Resume</a></li>
+                            <li><a href="/files/leetcode_algorithm.json">leetcode_algorithm.json</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://github.com/nixinger">github/nixinger</a></li>
+                            <li><a href="http://weibo.com/nixingwuwei">weibo/nixingwuwei</a></li>
+                            <li><a href="mailto:nixingwuwei@gmail.com">mail/Yao Yiyun</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <!--<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                </address>[> /#about <]
+
+        </footer>[> /#contentinfo <]-->
+
+<!---->
+<script type="text/javascript">
+    var disqus_shortname = 'yyypasserbysblog';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

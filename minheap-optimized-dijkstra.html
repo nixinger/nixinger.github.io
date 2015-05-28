@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+        <meta charset="utf-8" />
+        <title>MinHeap-Optimized Dijkstra</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">yyypasserby' blog </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="/category/algorithm.html">algorithm</a></li>
+                    <li><a href="/category/language.html">language</a></li>
+                    <li><a href="/category/project.html">project</a></li>
+                    <li><a href="/category/settings.html">settings</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/minheap-optimized-dijkstra.html" rel="bookmark"
+           title="Permalink to MinHeap-Optimized Dijkstra">MinHeap-Optimized Dijkstra</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-04-05T00:00:00+08:00">
+                Published: 2015-04-05
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/algorithm.html">algorithm</a>. </p>
+
+</footer><!-- /.post-info -->      <p>In Microsoft campus recuitment contest, there is a <a href="">problem</a> which could use <a href="">Dijkstra shortest path algorithm</a> to solve. And I write a version whose time complexity is <strong>O(n2)</strong> in the contest, however, that makes me feel not very good. So I decide to have a good review of some basic algorithms.</p>
+<h2>The simple version of Dijkstra</h2>
+<p>Dijkstra shortest path algorithms is the fastest single point shortest pathfinding algorithms so far. And it is very easy to program. The basic pseudo code is as follows.</p>
+<div class="highlight"><pre>Node S = the Start node
+Set M = the set contains those nodes have already find the shortest path to S
+Set N = the set contains those nodes have not find the shortest path to S yet
+Array d = the current shortest path to S
+Function w(x, y) = return the distance between x and y
+
+for each i in d:
+    d(i) = infinite
+d(S) = 0
+for N is not empty:
+    v = Extract_min(N)
+    for each node i in N:
+        if d(i) &gt; d(v) + w(v, i):
+            d(i) = d(v) + w(v, i)
+    add v to M
+</pre></div>
+
+
+<p>So basic idea of Dijsktra is that we must find the current min value to the origin <strong>S</strong> and gradually update the value of distance from other nodes to the origin <strong>S</strong>. Actually, we find the only point that could be optimized is the function <strong>Extract_min</strong>. So the problem comes to how to extract a min value from an array. </p>
+<p>In a very common style of thinking, we will consider the algorithm like this.</p>
+<div class="highlight"><pre><span class="kd">function</span> <span class="nx">Extract_min</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">:</span>
+    <span class="nx">v</span><span class="p">,</span> <span class="nx">min</span> <span class="o">=</span> <span class="nx">infinite</span>
+    <span class="k">for</span> <span class="nx">each</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">d</span><span class="o">:</span>
+        <span class="k">if</span> <span class="nx">d</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nx">min</span><span class="o">:</span>
+            <span class="nx">min</span> <span class="o">=</span> <span class="nx">d</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+            <span class="nx">v</span> <span class="o">=</span> <span class="nx">i</span>
+    <span class="k">return</span> <span class="nx">i</span>
+</pre></div>
+
+
+<p>This algorithm use the time complexity of <strong>O(n)</strong> to find a min value, is not so acceptable if the number of nodes is large. In fact, we really know a way to optimize this operation, that is a <strong>heap</strong>.</p>
+<p>Heap is a kind of data structure that can get the min/max element of a set of things. The time complexity of pop/push an element is <strong>O(logn)</strong> is a good optimization compare to the sequential compare. In <strong>C++</strong>, there are also some useful functions to implement the operations.</p>
+<p>In <strong>C++</strong>, there is no a practical data structure named <strong>heap</strong>, like <strong>vector</strong>, <strong>set</strong> or <strong>unordered_map</strong>. However, something related to the max heap named priority queue is an <strong>STL</strong> container. So how are the heap implemented? See the following functions.</p>
+<div class="highlight"><pre><span class="n">make_heap</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">begin</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">end</span><span class="p">);</span>
+<span class="n">push_heap</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">begin</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">end</span><span class="p">);</span>
+<span class="n">pop_heap</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">begin</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">end</span><span class="p">);</span>
+</pre></div>
+
+
+<p>These three functions is all we need to implement a heap. The three functions also can accept another parameter named <strong>Compare</strong>, which determines two problems, max or min and which attributes are to compare. And this function is very important for us to customized the STL function so that we could use heap to optimize Dijkstra algorithm.</p>
+<h2>Minheap-Optimized Dijkstra</h2>
+<p>Ok, let's just start to optimized the <strong>Extract_min</strong> function.</p>
+<p>First, we also need to initialize a <strong>vector</strong>, which contains the distance of every nodes from the origin S.</p>
+<div class="highlight"><pre><span class="n">vector</span><span class="o">&lt;</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">d</span><span class="p">;</span>
+<span class="n">d</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">node_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">make_pair</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">INT_MAX</span><span class="p">));</span>
+<span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">kv</span> <span class="p">:</span> <span class="n">d</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">k</span><span class="p">.</span><span class="n">first</span> <span class="o">=</span> <span class="o">++</span><span class="n">cnt</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">d</span><span class="p">[</span><span class="n">begin</span><span class="p">].</span><span class="n">second</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+
+
+<p>We use the index to represent the nodes index in the graph which begins from 1. And the first node extracted from the node set must be the origin <strong>S</strong> itself. So we change the value of <strong>S</strong> in <strong>d</strong> to <strong>ZERO</strong>.</p>
+<p>Second, we need a loop to find if there are still things in the <strong>Set N</strong>, and also to <strong>Extract_min</strong> from the set of number.</p>
+<div class="highlight"><pre><span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">d</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">make_heap</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">d</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">dijkstra_min_heap</span><span class="p">);</span>
+    <span class="n">pop_heap</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">d</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">dijkstra_min_heap</span><span class="p">);</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>These two key statements are to optimized the <strong>Extract_min</strong> function, the <strong>pop_heap</strong> function will put the min or max element to the end of the vector, so we just need to get the element from the vector's back. And <strong>dijkstra_min_heap</strong> is just as follow.</p>
+<div class="highlight"><pre><span class="kt">bool</span> <span class="nf">dijkstra_min_heap</span><span class="p">(</span><span class="k">const</span> <span class="n">pii</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">,</span> <span class="k">const</span> <span class="n">pii</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">a</span><span class="p">.</span><span class="n">second</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>So, when we use the <strong>STL</strong>, it is easy for us to implement some algorithms fast and accurate.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="/files/resume.pdf">Resume</a></li>
+                            <li><a href="/files/leetcode_algorithm.json">leetcode_algorithm.json</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://github.com/nixinger">github/nixinger</a></li>
+                            <li><a href="http://weibo.com/nixingwuwei">weibo/nixingwuwei</a></li>
+                            <li><a href="mailto:nixingwuwei@gmail.com">mail/Yao Yiyun</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <!--<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                </address>[> /#about <]
+
+        </footer>[> /#contentinfo <]-->
+
+<!---->
+<script type="text/javascript">
+    var disqus_shortname = 'yyypasserbysblog';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+        <meta charset="utf-8" />
+        <title>yyypasserby' blog - settings</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">yyypasserby' blog </a></h1>
+                <nav><ul>
+                    <li><a href="/category/algorithm.html">algorithm</a></li>
+                    <li><a href="/category/language.html">language</a></li>
+                    <li><a href="/category/project.html">project</a></li>
+                    <li class="active"><a href="/category/settings.html">settings</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/how-to-use-shadowsocks.html">How to use Shadowsocks?</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2015-01-26T00:00:00+08:00">
+                Published: 2015-01-26
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/settings.html">settings</a>. </p>
+
+</footer><!-- /.post-info --><p><strong>Shadowsocks</strong> is a secure socks5 proxy which is designed to protect your internet traffic.(from <a href="http://shadowsocks.org/en/index.html">shadowsocks.org</a>)</p>
+<p>To ours to set up your own shadowsocks server, only needs 24 RMB <strong>anually</strong> and a few minutes. This will really helps you when you want to log on your <a href="https://www.facebook.com/">facebook.com</a> or searching some important contents on the server which is not located inside.</p>
+<h2>Step1 Setup your server</h2>
+<p>Shadowsocks must have a server outside to retransmit your requests and responses. The server needs not to be very powerful. Luckily, there is a website to provide such services online <a href="https://bandwagonhost.com/">BandwagonHOST</a>. This website provides many server services from expensive to cheap. And the service which only cost your <strong>24</strong> RMB/year is very secret.</p>
+<p><img alt="bandwagon" src="/images/shadowsocks/bandwagon.png" /></p>
+<h3>Register an account</h3>
+<p>Click the <strong>register</strong> button on the right-top side of the web page and fill in the forms.</p>
+<p><img alt="register" src="/images/shadowsocks/register.png" /></p>
+<h3>Login</h3>
+<p>Click the <strong>client area</strong> on the right side and log in with your account.</p>
+<p><img alt="login" src="/images/shadowsocks/login.png" /></p>
+<h3>Order your services</h3>
+<p>Click the <strong>Service</strong> button on the nav bar and choose <strong>Order New Services</strong>. </p>
+<p><img alt="orderNew" src="/images/shadowsocks/orderNew.png" /></p>
+<p>Then you will find several services with different prices. The service I ordered is as follows which is the cheapest.</p>
+<p><img alt="cheapest" src="/images/shadowsocks/cheapest.png" /></p>
+<p>Click <strong>Order Now</strong> and you will see this page. Click <strong>Add to Cart</strong>.</p>
+<p><img alt="orderNow" src="/images/shadowsocks/orderNow.png" /></p>
+<p>Then click <strong>Checkout</strong> and check some basic and infomation and click <strong>Complete Order</strong>. It only provide the way of <strong>Paypal</strong> to pay the money.</p>
+<p><img alt="checkout" src="/images/shadowsocks/checkout.png" /></p>
+<p>After that use Paypal to bound your bankcard and pay it. Then you will have your own serser outside, though its performance is just like a Raspberry or even lower. However, it doesn't matter, we just need it to play a role to run a shadowsocks server on it.</p>
+<p><img alt="paypal" src="/images/shadowsocks/paypal.png" /></p>
+<h3>Setup shadowsocks server</h3>
+<p>After your payment, enter your account and you will see your newly-ordered services is in the panel.</p>
+<p><img alt="newOrdered" src="/images/shadowsocks/newOrdered.png" /></p>
+<p>Click <strong>KiwiVM Control Panel</strong> and you will see the IP address and SSH port of your server. You may not to tell it other only if you want to share your server with others. There are also many interesting function that the panel provides, have a look.</p>
+<p>We can use the basic operating system that is defaultly installed on the server. There are several ways to make commands sent to your server. I choose to use the <strong>local ssh command line tool</strong> to log on to my server.</p>
+<p>First you need to <strong>regenerate</strong> your root password of your operating system on the control panel.</p>
+<p><img alt="pwdRegen" src="/images/shadowsocks/pwdRegen.png" /></p>
+<p>Click on <strong>Root password modification</strong> and <strong>Generate and set new root password</strong>. You will get a new password of your root account of the OS. Copy it to your clipboard and use when you make an ssh request to the remote server. The remote ssh command is like this one.</p>
+<div class="highlight"><pre>ssh root@&lt;your_remote_IP&gt; -p &lt;your_remote_port&gt;
+</pre></div>
+
+
+<p>Then according to the prompt, enter your password and wait. After a few seconds, if your info is correct, you will log on to your server. <strong>(<a href="http://zh.wikipedia.org/wiki/Secure_Shell">SSH</a> is a protocol and in every operating system, there are their own ways to install and use SSH, like <a href="http://www.putty.org/">Putty</a> on Windows)</strong></p>
+<p>After you log on, the picture will be like this:</p>
+<p><img alt="ssh" src="/images/shadowsocks/ssh.png" /></p>
+<p>Now you have your control over the remote server that belongs to you now. And this server is used as a shadowsocks server.</p>
+<p>Enter these commands to install it if your use the default <a href="https://www.debian.org/index.zh-cn.html">Debian system</a>.</p>
+<div class="highlight"><pre>apt-get install python-pip
+</pre></div>
+
+
+<p>This is used to install <a href="https://pypi.python.org/pypi/pip">pip</a> and it gives you a convenient way to install shadowsocks server in the command line environment.</p>
+<p>After the installation is over, then type</p>
+<div class="highlight"><pre>pip install shadowsocks
+</pre></div>
+
+
+<p>After shadowsocks server is installed, you could try to run it with this command.</p>
+<div class="highlight"><pre>ssserver -p <span class="m">8000</span> -k &lt;password&gt; -m rc4-md5
+</pre></div>
+
+
+<p>This command means you will use port <strong>8000</strong> as the shadowsocks port, <strong>password</strong> as your password to connect to this shadowsocks server and <strong>rc4-md5</strong> as the encryption method.</p>
+<p>You could also use this way to make it run <strong>in background</strong> which makes you can do other things with this remote access.</p>
+<div class="highlight"><pre>ssserver -p <span class="m">8000</span> -k &lt;password&gt; -m rc4-md5 -d start
+ssserver -p <span class="m">8000</span> -k &lt;password&gt; -m rc4-md5 -d stop
+</pre></div>
+
+
+<p>Also, there are still other ways to start your shadowsocks server, like making a <a href="https://github.com/shadowsocks/shadowsocks/wiki/Configuration-via-Config-File">configuration file</a>.</p>
+<p>So far, we have finished all the things that should be done remotely on the server, which is also the most difficult one. Now, let's turn to the client and after finish this, you could say hi to your friends on the facebook freely.</p>
+<h2>Step2 Connect to your server</h2>
+<p>For different OS, the client is different. This <a href="https://github.com/shadowsocks/shadowsocks/wiki/Ports-and-Clients">blog</a> is helpful for you to choose different client. And I am going to show you how to install client on OSX.</p>
+<h3>Download GoAgentX</h3>
+<p>You can download the newest version of <a href="https://github.com/ohdarling/GoAgentX">GoAgentX</a> in this <a href="https://github.com/ohdarling/GoAgentX/releases">web page</a></p>
+<p><img alt="goagentx" src="/images/shadowsocks/goagentx.png" /></p>
+<p>After download it, open dmg file and move the main program into the <strong>/Applicaitons</strong> directory to make it installed.</p>
+<p><img alt="goagentxInstall" src="/images/shadowsocks/goagentxInstall.png" /></p>
+<h3>Configure settings</h3>
+<p>Open the GoAgentX and you will see this page. And click the <strong>+</strong> button on the left-bottom side of the window.</p>
+<p>Choose the shadowsocks service and name it. Click <strong>Create</strong>.</p>
+<p><img alt="create" src="/images/shadowsocks/create.png" /></p>
+<p>Type in the required information.</p>
+<ul>
+<li>IP(the same as your ssh IP)</li>
+<li>port(the port that you set with your command or .json file)</li>
+<li>password(also set by you)</li>
+<li>encrypt method(also set by you)</li>
+</ul>
+<p>There is no need to care about the local port, GoAgentX will select a free port automatically.</p>
+<h3>Launch services</h3>
+<p>If you have follow this tutorial step by step, and check it again, you can now click the <strong>launch</strong> button on the top-right side of the GoAgentX window. Try to surf on these page.</p>
+<ul>
+<li><a href="https://www.google.com/?gws_rd=ssl">google.com</a></li>
+<li><a href="https://www.facebook.com/">facebook.com</a></li>
+<li><a href="https://twitter.com/">twitter.com</a></li>
+<li><a href="https://www.youtube.com/">youtube.com</a></li>
+</ul>
+<p>See what happened to your computer.</p><p>There are <a href="/how-to-use-shadowsocks.html#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/django-on-heroku.html" rel="bookmark"
+                           title="Permalink to Some tips on Deploying Django 1.7 to Heroku">Some tips on Deploying Django 1.7 to Heroku</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-12-21T00:00:00+08:00">
+                Published: 2014-12-21
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/settings.html">settings</a>. </p>
+
+</footer><!-- /.post-info -->                <p><a href="https://www.djangoproject.com/">Django 1.7</a> has been long released and its new features of migrations make our web development much easier when dealing with DBs.</p>
+<p><a href="https://www.heroku.com/">Heroku</a> is a PaaS that managed by <a href="http://www.git-scm.com/">git</a> and supports Django. If you are a man that don't want to spend any money on your website ...</p>
+                <a class="readmore" href="/django-on-heroku.html">read more</a>
+<p>There are <a href="/django-on-heroku.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/django-and-bower.html" rel="bookmark"
+                           title="Permalink to Some practices on Django & bower">Some practices on Django & bower</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-12-18T00:00:00+08:00">
+                Published: 2014-12-18
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/settings.html">settings</a>. </p>
+
+</footer><!-- /.post-info -->                <p>As a front-end developer, most of you may know <a href="http://bower.io">bower</a> these days. Bower is a powerful tools to make your front-end more modular and easy to manage.</p>
+<p>And <a href="https://www.djangoproject.com/">Django</a> is also very popular in the back-end deveopment. <a href="http://www.douban.com/">Douban</a>, <a href="http://www.zhihu.com/">Zhihu</a> all uses Django as their backend framework.</p>
+<p>Today, I am just ...</p>
+                <a class="readmore" href="/django-and-bower.html">read more</a>
+<p>There are <a href="/django-and-bower.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/opencv-settings-on-mac.html" rel="bookmark"
+                           title="Permalink to OpenCV settings on Mac">OpenCV settings on Mac</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-11-24T00:00:00+08:00">
+                Published: 2014-11-24
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/settings.html">settings</a>. </p>
+
+</footer><!-- /.post-info -->                <h3>Install homebrew</h3>
+<p>Type the following directions to install <strong>homebrew</strong></p>
+<div class="highlight"><pre>ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;
+</pre></div>
+
+
+<h3>Install OpenCV</h3>
+<p>After installing homebrew, we just need to type the following direction to install <strong>OpenCV</strong></p>
+<div class="highlight"><pre>brew install opencv
+</pre></div>
+
+
+<p>It will not always works well. There may be kind ...</p>
+                <a class="readmore" href="/opencv-settings-on-mac.html">read more</a>
+<p>There are <a href="/opencv-settings-on-mac.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/vim-youcompleteme-settings.html" rel="bookmark"
+                           title="Permalink to Vim + Youcompleteme Settings">Vim + Youcompleteme Settings</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-11-24T00:00:00+08:00">
+                Published: 2014-11-24
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/settings.html">settings</a>. </p>
+
+</footer><!-- /.post-info -->                <p><strong><a href="http://www.vim.org/">Vim</a></strong>, as an excellent editor which have already been admitted by many coders, may be the first choice to editor C/C++ program.</p>
+<p>Vim can do many things fluently in editing, however, vim can't do everything in coding. In many IDEs, the basic function is to complete a variable ...</p>
+                <a class="readmore" href="/vim-youcompleteme-settings.html">read more</a>
+<p>There are <a href="/vim-youcompleteme-settings.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="/files/resume.pdf">Resume</a></li>
+                            <li><a href="/files/leetcode_algorithm.json">leetcode_algorithm.json</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://github.com/nixinger">github/nixinger</a></li>
+                            <li><a href="http://weibo.com/nixingwuwei">weibo/nixingwuwei</a></li>
+                            <li><a href="mailto:nixingwuwei@gmail.com">mail/Yao Yiyun</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <!--<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                </address>[> /#about <]
+
+        </footer>[> /#contentinfo <]-->
+
+<!---->
+<script type="text/javascript">
+    var disqus_shortname = 'yyypasserbysblog';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

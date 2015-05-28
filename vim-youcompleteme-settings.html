@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+        <meta charset="utf-8" />
+        <title>Vim + Youcompleteme Settings</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">yyypasserby' blog </a></h1>
+                <nav><ul>
+                    <li><a href="/category/algorithm.html">algorithm</a></li>
+                    <li><a href="/category/language.html">language</a></li>
+                    <li><a href="/category/project.html">project</a></li>
+                    <li class="active"><a href="/category/settings.html">settings</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/vim-youcompleteme-settings.html" rel="bookmark"
+           title="Permalink to Vim + Youcompleteme Settings">Vim + Youcompleteme Settings</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-11-24T00:00:00+08:00">
+                Published: 2014-11-24
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/settings.html">settings</a>. </p>
+
+</footer><!-- /.post-info -->      <p><strong><a href="http://www.vim.org/">Vim</a></strong>, as an excellent editor which have already been admitted by many coders, may be the first choice to editor C/C++ program.</p>
+<p>Vim can do many things fluently in editing, however, vim can't do everything in coding. In many IDEs, the basic function is to complete a variable when we just enter one or two single words. Actually, vim itself have some complete function, but not so powerful. When we use <a href="https://www.sgi.com/tech/stl/index.html">STL</a>, we may not remember every functions attributes clearly, so we need a reminder, or a completer.</p>
+<p><strong><a href="https://github.com/Valloric/YouCompleteMe">Youcompleteme</a></strong> is an also excellent utility in completing and could be easily installed to vim. So, let's begin.</p>
+<h2>Install Vim with python support</h2>
+<p>To install youcompleteme on your vim, python support should be added to your vim.
+It is always lucky for mac user, you just need to install <a href="https://github.com/b4winckler/macvim">macvim</a> with the lastest version.</p>
+<h2>Install Vundle</h2>
+<p>If you are an old vimer, you must have been worried about your numerous add-ons to your vim. It is hard for user to arrange all the add-ons manually. <a href="https://github.com/gmarik/Vundle.vim">Vundle</a> is a vim add-ons manager, moreover,  it could help you to install add-ons.</p>
+<p>After you installed Vundle, you can add these lines to your .vimrc</p>
+<div class="highlight"><pre>&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot; Vundle
+set nocompatible
+filetype off
+
+
+set rtp+=~/.vim/bundle/vundle
+call vundle#rc()
+
+
+Bundle &#39;gmarik/vundle&#39;
+
+
+Bundle &#39;Valloric/YouCompleteMe&#39;
+Bundle &#39;Valloric/ListToggle&#39;
+Bundle &#39;scrooloose/syntastic&#39;
+
+
+filetype plugin indent on
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot; Vundle
+</pre></div>
+
+
+<p>After that, your could start your vim and get into commandline mode and insert:</p>
+<div class="highlight"><pre>:source ~/.vimrc
+:BundleInstall
+</pre></div>
+
+
+<p>Wait for a while, youcompleteme and syntastic are added to your vim.</p>
+<h2>Install clang-completer</h2>
+<p>You have already installed Youcompleteme, and you don't have its cpp completer yet. What you need to do is quite simple.</p>
+<div class="highlight"><pre>cd ~/.vim/bundle/YouCompleteMe
+./install.sh --clang-completer
+</pre></div>
+
+
+<h2>Settings</h2>
+<p>Youcompleteme works with an important setting file called .ycm_extra_conf.py.
+It determines many important configuration includes stl positions and completer encoding. Youcompleteme has just give you a simple one in the youcompleteme homedir. </p>
+<h3>Add STL relation</h3>
+<p>The first thing to do is to add stl dirs into the completion dirs. If you are a mac user, you can use the following direction.</p>
+<div class="highlight"><pre>echo | clang -std=c++11 -stdlib=libc++ -v -E -x c++ -
+</pre></div>
+
+
+<p>You will get many lines popped, and find such lines:</p>
+<div class="highlight"><pre><span class="cp">#include &quot;...&quot; search starts here:</span>
+<span class="cp">#include &lt;...&gt; search starts here:</span>
+ <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Developer</span><span class="o">/</span><span class="n">CommandLineTools</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="p">..</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">c</span><span class="o">++/</span><span class="n">v1</span>
+ <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">include</span>
+ <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Developer</span><span class="o">/</span><span class="n">CommandLineTools</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="p">..</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">clang</span><span class="o">/</span><span class="mf">5.0</span><span class="o">/</span><span class="n">include</span>
+ <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Developer</span><span class="o">/</span><span class="n">CommandLineTools</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">include</span>
+ <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">include</span>
+ <span class="o">/</span><span class="n">System</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Frameworks</span> <span class="p">(</span><span class="n">framework</span> <span class="n">directory</span><span class="p">)</span>
+ <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Frameworks</span> <span class="p">(</span><span class="n">framework</span> <span class="n">directory</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Add these lines to the corresponding place in .ycm_extra_conf.py:</p>
+<div class="highlight"><pre>flags = [
+&#39;-isystem&#39;,
+...
+]
+</pre></div>
+
+
+<h3>Change Encoding</h3>
+<p>This situation happened on my mac. When I created a cpp file and type <code>#include &lt;iostream&gt;</code>, the completion showed when I typed the first some of these letters. And when I continued to type several letters, the completion disappeared.</p>
+<p>After I searched on google, and make such decision, the completion is the file and .ycm_extra_conf.py is not the same. So I tried this, </p>
+<div class="highlight"><pre>reload(sys)
+sys.setdefaultencoding(&#39;utf-8&#39;)
+</pre></div>
+
+
+<p>I add the above lines to my .ycm_extra_conf.py file. And the lovely completion come back to me.</p>
+<h2>Some useful settings in .vimrc for Youcompleteme</h2>
+<p>These are my personal vimrc settings for ycm, please have a look.</p>
+<div class="highlight"><pre>&quot;&quot;&quot;&quot;&quot;&quot;&quot;YouCompleteMe&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+nmap &lt;leader&gt;gd :YcmDiags&lt;CR&gt;
+nnoremap &lt;leader&gt;gl :YcmCompleter GoToDeclaration&lt;CR&gt;
+nnoremap &lt;leader&gt;gf :YcmCompleter GoToDefinition&lt;CR&gt;
+nnoremap &lt;leader&gt;gg :YcmCompleter GoToDefinitionElseDeclaration&lt;CR&gt;
+let g:ycm_global_ycm_extra_conf = &#39;~/.ycm_extra_conf.py&#39; &quot;default ycm conf location
+let g:ycm_error_symbol = &#39;&gt;&gt;&#39;
+let g:ycm_warning_symbol = &#39;&gt;*&#39;
+let g:ycm_confirm_extra_conf = 0 &quot;no annoying tips on vim starting
+let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_min_num_of_chars_for_completion = 1
+let g:ycm_cache_omnifunc = 0
+let g:ycm_seed_identifiers_with_syntax = 1
+let g:ycm_complete_in_comments = 1
+let g:ycm_complete_in_strings = 1
+let g:ycm_collect_identifiers_from_comments_and_strings = 0
+let g:ycm_filetype_blacklist = {&#39;tex&#39; : 1, &#39;markdown&#39; : 1, &#39;text&#39; : 1, &#39;html&#39; : 1}
+let g:syntastic_ignore_files = [&quot;.*\.py$&quot;] &quot;python has its own check engine
+&quot;let g:ycm_semantic_triggers = {}
+&quot;let g:ycm_semantic_triggers.c = [&#39;-&gt;&#39;, &#39;.&#39;, &#39; &#39;, &#39;(&#39;, &#39;[&#39;, &#39;&amp;&#39;]
+set completeopt = longest,menu
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+</pre></div>
+
+
+<hr />
+<p>Now, your vim is already a strong cpp work environment. </p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="/files/resume.pdf">Resume</a></li>
+                            <li><a href="/files/leetcode_algorithm.json">leetcode_algorithm.json</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://github.com/nixinger">github/nixinger</a></li>
+                            <li><a href="http://weibo.com/nixingwuwei">weibo/nixingwuwei</a></li>
+                            <li><a href="mailto:nixingwuwei@gmail.com">mail/Yao Yiyun</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <!--<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                </address>[> /#about <]
+
+        </footer>[> /#contentinfo <]-->
+
+<!---->
+<script type="text/javascript">
+    var disqus_shortname = 'yyypasserbysblog';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

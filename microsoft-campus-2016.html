@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+        <meta charset="utf-8" />
+        <title>微软2016实习生网申解题报告</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">yyypasserby' blog </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="/category/algorithm.html">algorithm</a></li>
+                    <li><a href="/category/language.html">language</a></li>
+                    <li><a href="/category/project.html">project</a></li>
+                    <li><a href="/category/settings.html">settings</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/microsoft-campus-2016.html" rel="bookmark"
+           title="Permalink to 微软2016实习生网申解题报告">微软2016实习生网申解题报告</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-04-03T00:00:00+08:00">
+                Published: 2015-04-03
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/algorithm.html">algorithm</a>. </p>
+
+</footer><!-- /.post-info -->      <p>一共有4个题，时间是2个半小时。题目都在<a href="http://hihocoder.com/contest/mstest2015april/problems">这儿</a>。比赛时，只做了前面两道，第三道一直<strong>TLE</strong>。比赛结束后，经一个同学的指点，明白了第三题的原理。第四题的解答在<a href="http://ask.julyedu.com/question/314">这里</a>，是一道还比较复杂的动态规划，我之后如果理解并且敲出来了，在和大家分享，这边先简单介绍一下前三道题的解题思路。</p>
+<h2>Magic Box</h2>
+<p>时间限制:10000ms
+单点时限:1000ms
+内存限制:256MB</p>
+<h3>描述</h3>
+<p>The circus clown Sunny has a magic box. When the circus is performing, Sunny puts some balls into the box one by one. The balls are in three colors: red(R), yellow(Y) and blue(B). Let Cr, Cy, Cb denote the numbers of red, yellow, blue balls in the box. Whenever the differences among Cr, Cy, Cb happen to be x, y, z, all balls in the box vanish. Given x, y, z and the sequence in which Sunny put the balls, you are to find what is the maximum number of balls in the box ever.</p>
+<p>For example, let's assume x=1, y=2, z=3 and the sequence is RRYBRBRYBRY. After Sunny puts the first 7 balls, RRYBRBR, into the box, Cr, Cy, Cb are 4, 1, 2 respectively. The differences are exactly 1, 2, 3. (|Cr-Cy|=3, |Cy-Cb|=1, |Cb-Cr|=2) Then all the 7 balls vanish. Finally there are 4 balls in the box, after Sunny puts the remaining balls. So the box contains 7 balls at most, after Sunny puts the first 7 balls and before they vanish.</p>
+<h3>输入</h3>
+<p>Line 1: x y z</p>
+<p>Line 2: the sequence consisting of only three characters 'R', 'Y' and 'B'.</p>
+<p>For 30% data, the length of the sequence is no more than 200.</p>
+<p>For 100% data, the length of the sequence is no more than 20,000, 0 &lt;= x, y, z &lt;= 20.</p>
+<h3>输出</h3>
+<p>The maximum number of balls in the box ever.</p>
+<h3>样例输入</h3>
+<div class="highlight"><pre>1 2 3
+RRYBRBRYBRY
+</pre></div>
+
+
+<h3>样例输出</h3>
+<div class="highlight"><pre>7
+</pre></div>
+
+
+<p>第一道题相对比较简单。给定一个序列，序列中只有三个字母<strong>(R,B,Y)</strong>，代表放入一个袋子中的球的顺序。还会给三个差值，如果这个序列中任意一时刻，袋中三个球的差值，满足给定的三个差值，则将球全部清空。然后最后返回的是袋中存在球的最大值。</p>
+<p>这个题最直接的做法就是模拟，编码起来也会比较快。维护两个量，一个是三个球在袋中分别的总数，另一个是袋中球的存在的最大值。每次加入一个球，就把相应球的个数<strong>+1</strong>，之后就<strong>test</strong>每两个球的差值是否满足给定的差值。这里要判断<strong>6</strong>种情况，分别是<strong>{(1,2,3),(1,3,2),(2,1,3),(2,3,1),(3,1,2),(3,2,1)}</strong>，直接写死就可以了。</p>
+<p>每当满足差值条件后，就把当前的记录值清空，并且更新最大值。</p>
+<h2>Professor Q's Software</h2>
+<p>时间限制:10000ms
+单点时限:1000ms
+内存限制:256MB</p>
+<h3>描述</h3>
+<p>Professor Q develops a new software. The software consists of N modules which are numbered from 1 to N. The i-th module will be started up by signal Si. If signal Si is generated multiple times, the i-th module will also be started multiple times. Two different modules may be started up by the same signal. During its lifecircle, the i-th module will generate Ki signals: E1, E2, ..., EKi. These signals may start up other modules and so on. Fortunately the software is so carefully designed that there is no loop in the starting chain of modules, which means eventually all the modules will be stoped. Professor Q generates some initial signals and want to know how many times each module is started.</p>
+<p><img alt="signals.png" src="http://media.hihocoder.com//problem_images/20150325/14272465373693.png" /></p>
+<h3>输入</h3>
+<p>The first line contains an integer T, the number of test cases. T test cases follows.</p>
+<p>For each test case, the first line contains contains two numbers N and M, indicating the number of modules and number of signals that Professor Q generates initially.</p>
+<p>The second line contains M integers, indicating the signals that Professor Q generates initially.</p>
+<p>Line 3~N + 2, each line describes an module, following the format S, K, E1, E2, ... , EK. S represents the signal that start up this module. K represents the total amount of signals that are generated during the lifecircle of this module. And E1 ... EK are these signals.</p>
+<p>For 20% data, all N, M &lt;= 10
+For 40% data, all N, M &lt;= 103
+For 100% data, all 1 &lt;= T &lt;= 5, N, M &lt;= 105, 0 &lt;= K &lt;= 3, 0 &lt;= S, E &lt;= 105.</p>
+<p>Hint: HUGE input in this problem. Fast IO such as scanf and BufferedReader are recommended.</p>
+<h3>输出</h3>
+<p>For each test case, output a line with N numbers Ans1, Ans2, ... , AnsN. Ansi is the number of times that the i-th module is started. In case the answers may be too large, output the answers modulo 142857 (the remainder of division by 142857).</p>
+<h3>样例输入</h3>
+<div class="highlight"><pre>3
+3 2
+123 256
+123 2 456 256
+456 3 666 111 256
+256 1 90
+3 1
+100
+100 2 200 200
+200 1 300
+200 0
+5 1
+1
+1 2 2 3
+2 2 3 4
+3 2 4 5
+4 2 5 6
+5 2 6 7
+</pre></div>
+
+
+<h3>样例输出</h3>
+<div class="highlight"><pre>1 1 3
+1 2 2
+1 1 2 3 5
+</pre></div>
+
+
+<p>第二题其实也就是一道输入输出相对较为复杂的模拟(就做出两道模拟，汗)。题目的意思是，会给出几个<strong>module</strong>，每个<strong>module</strong>有自己的唤醒<strong>signal</strong>，也就是如果这个信号被发出，这个<strong>module</strong>就会运行；每一个<strong>module</strong>还会发出其他<strong>signal</strong>来唤醒别的<strong>module</strong>。一开始<strong>Professor Q</strong>会进场自带几个<strong>signal</strong>，题目中比较重要的话是，不会出现循环，<strong>signal</strong>是有限的。然后需要返回的是每个<strong>module</strong>一共被调用的次数。</p>
+<p>输入很多。然后题目中希望我们选择用更快的输入方式。但是我们就是不用。因为我们有这样一句话。</p>
+<div class="highlight"><pre><span class="n">cin</span><span class="p">.</span><span class="n">tie</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="n">cin</span><span class="p">.</span><span class="n">sync_with_stdio</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+
+
+<p>传说这句话，可以把<strong>cin</strong>的输入速度提到<strong>scanf</strong>一样的速度。再附送一个模板。</p>
+<div class="highlight"><pre><span class="cp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="cp">#define _ cin.tie(0);cin.sync_with_stdio(0);</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span><span class="n">_</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>第一行似乎只有<strong>gcc-4.8</strong>以上支持，国外的几大<strong>OJ</strong>都是支持的，国内好像支持还不是特别全面。Mac上配置<strong>gcc-4.8</strong>看<a href="https://github.com/KuoE0/KuoE0-s-Dots/blob/master/2014-01-31-install-gnu-gcc-on-os-x-and-use-the-header-bits-stdcplusplus-h-and-policy-based-data-structure.md">这里</a>。包含了所有的<strong>C++</strong>标准库的头文件，感觉这个头文件也是为刷题而生。</p>
+<p>回到本题。这道题其实<strong>module</strong>只是个幌子，每个<strong>module</strong>被唤醒的<strong>signal</strong>是唯一的，所以完全可以理解为<strong>signal</strong>唤醒<strong>signal</strong>，然后算每个<strong>signal</strong>出现的个数。</p>
+<p>好了，既然事情已经挑明了，那么模拟的过程也十分明显了。我一共用了4个数据结构，其中一个队列，两个<strong>unordered_map</strong>，一个<strong>vector</strong>。队列模拟过程，一个<strong>map</strong>记录表格，一个<strong>map</strong>记录次数，<strong>vector</strong>记录输入<strong>module</strong>的顺序。</p>
+<ol>
+<li>首先初始化一个队列，里面放着一开始的几个信号。</li>
+<li>每次循环，<strong>pop_front</strong>，出现次数+1，查表，把将要唤醒的<strong>signal</strong>加入队尾。</li>
+<li>循环直到队列为空。</li>
+</ol>
+<p>输出根据<strong>vector</strong>中的顺序，查存次数的<strong>map</strong>输出。</p>
+<h2>Islands Travel</h2>
+<p>时间限制:10000ms
+单点时限:1000ms
+内存限制:256MB</p>
+<h3>描述</h3>
+<p>There are N islands on a planet whose coordinates are (X1, Y1), (X2, Y2), (X3, Y3) ..., (XN, YN). You starts at the 1st island (X1, Y1) and your destination is the n-th island (XN, YN). Travelling between i-th and j-th islands will cost you min{|Xi-Xj|, |Yi-Yj|} (|a| denotes the absolute value of a. min{a, b} denotes the smaller value between a and b) gold coins. You want to know what is the minimum cost to travel from the 1st island to the n-th island.</p>
+<h3>输入</h3>
+<p>Line 1: an integer N.</p>
+<p>Line 2~N+1: each line contains two integers Xi and Yi.</p>
+<p>For 40% data, N&lt;=1000，0&lt;=Xi,Yi&lt;=100000.</p>
+<p>For 100% data, N&lt;=100000，0&lt;=Xi,Yi&lt;=1000000000.</p>
+<h3>输出</h3>
+<p>Output the minimum cost.</p>
+<h3>样例输入</h3>
+<div class="highlight"><pre>3
+2 2
+1 7
+7 6
+</pre></div>
+
+
+<h3>样例输出</h3>
+<div class="highlight"><pre>2
+</pre></div>
+
+
+<p>题目的意思就是，给出<strong>N</strong>个点，然后，给出每个的<strong>(X, Y)</strong>坐标。通过<strong>min(|X1 - X2|, |Y1 - Y2|)</strong>的方式定义两点间的距离，图是一个全连通图。求的是从第一个点道最后一个点的最短距离。</p>
+<p>一开始，我直接吧这道题当成了全连通图的最短路做了，直接将输入预处理过后，开始最短路，明显超时，小数据也超时。</p>
+<p>比赛过后，和一个同学交流后，理解了超时的原因。我在预处理的过程中就已经超时了，我们不应该把所有的路径都初始化，根据题目的一些性质，许多路径其实在预处理的时候，就可以排除了。</p>
+<p>其实如果通过2维数组的方式，好像空间上也会超，所以数据中肯定有非常多的东西是冗余的，最后的图可能是一个非常稀疏的图，这样的图初始化和最后的最短路都会减少非常多的时间。</p>
+<p>我们首先思考，有哪些路径是真的需要的。首先，我们不能只关注于我们是求解一个最短路问题，因为我们发现问题并不是存在在最短路的时间复杂度上，而是出在<strong>构图</strong>上！那么构图的时候，我们有什么是可以注意的呢？</p>
+<p>现在假设，有<strong>A,B,C</strong>三点，如果<strong>A</strong>和<strong>B</strong>之间的距离是<strong>1</strong>，<strong>B</strong>和<strong>C</strong>之间的距离也是<strong>1</strong>，<strong>A</strong>和<strong>C</strong>之间的距离是<strong>2</strong>，那么对于我们要求以<strong>A</strong>为原点的最短路的时候，<strong>AC</strong>间的距离是无所谓的。也就是说这种情况下，<strong>经过中间点的不会弱于不经过中间点</strong>，那么我们只要在两个相邻的点之间构造一条边即可。</p>
+<p>那么怎么才能让这道题中的信息利用到这个信息呢？排序。如果是按照位置排序，我们一定能得到<strong>经过中间点的不会弱于不经过中间点</strong>的特性。</p>
+<p>但是题目中的距离可是涉及到了两个维度的。那么，让我们再看一下两点间的距离定义。</p>
+<div class="highlight"><pre>min(|X1 - X2|, |Y1 - Y2|)
+</pre></div>
+
+
+<p>我们如果先按照X轴排序，在相邻两点之间构造边，那么我们我可以保证，这两点之间的距离一定不会比这条边更差了(要么，Y轴构造的边比他好，比他差的话，根据定义，不影响)。再根据Y轴排序构边，如果更好，那么我们就要更新。</p>
+<p>然后再根据最短路径算法进行求解就没有问题。</p>
+<p>我使用的是<strong>unordered_map</strong>进行数据存储，应该会优化一些空间。因为我已经没有机会提交了，所以也不敢确定。后面我为了今年可能优化时间，敲了一个基于<strong>二项堆</strong>优化的最短路径，会在另一篇<a href="/minheap-optimized-dijkstra/">Blog</a>中详解。尽请期待。</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="/files/resume.pdf">Resume</a></li>
+                            <li><a href="/files/leetcode_algorithm.json">leetcode_algorithm.json</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://github.com/nixinger">github/nixinger</a></li>
+                            <li><a href="http://weibo.com/nixingwuwei">weibo/nixingwuwei</a></li>
+                            <li><a href="mailto:nixingwuwei@gmail.com">mail/Yao Yiyun</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <!--<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                </address>[> /#about <]
+
+        </footer>[> /#contentinfo <]-->
+
+<!---->
+<script type="text/javascript">
+    var disqus_shortname = 'yyypasserbysblog';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

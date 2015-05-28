@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
         <meta charset="utf-8" />
-        <title>yyypasserby' blog - yyypasserby</title>
+        <title>yyypasserby' blog - algorithm</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 
         <!--[if IE]>
@@ -14,7 +14,7 @@
         <header id="banner" class="body">
                 <h1><a href="/">yyypasserby' blog </a></h1>
                 <nav><ul>
-                    <li><a href="/category/algorithm.html">algorithm</a></li>
+                    <li class="active"><a href="/category/algorithm.html">algorithm</a></li>
                     <li><a href="/category/language.html">language</a></li>
                     <li><a href="/category/project.html">project</a></li>
                     <li><a href="/category/settings.html">settings</a></li>
@@ -127,58 +127,6 @@
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="/js-settimeout-scope-closure.html" rel="bookmark"
-                           title="Permalink to JavaScript的setTimeout执行顺序、作用域和闭包">JavaScript的setTimeout执行顺序、作用域和闭包</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-03-30T00:00:00+08:00">
-                Published: 2015-03-30
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
-        </address>
-<p>In <a href="/category/language.html">language</a>. </p>
-
-</footer><!-- /.post-info -->                <p>2015的腾讯校招笔试中考察了这样一道前端题。</p>
-<div class="highlight"><pre><span class="kd">var</span> <span class="nx">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="kd">function</span> <span class="nx">one</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-            <span class="nx">cnt</span> <span class="o">+=</span> <span class="nx">i</span><span class="p">;</span>
-        <span class="p">},</span> <span class="mi">0</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">two</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">consolo</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">cnt</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="nx">one</span><span class="p">();</span>
-<span class="nx">setTimeout</span><span class="p">(</span><span class="nx">two</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</pre></div>
-
-
-<p>问题是最后打印出来的数字是多少？</p>
-<p>有以下几个选项。</p>
-<div class="highlight"><pre>A) 45
-B) 55
-C) 100
-D) 0
-</pre></div>
-
-
-<h3>有关题目求解</h3>
-<p>在考试的时候，我选择的是<strong>A)和D)</strong>，最后这里两个答案都是不正确的。正确的答案是<strong>C)</strong>。</p>
-<p>首先<strong>setTimeout</strong>，是一个定时器函数，如果会在指定的毫秒数之后执行该语句。而这个函数如果以 ...</p>
-                <a class="readmore" href="/js-settimeout-scope-closure.html">read more</a>
-<p>There are <a href="/js-settimeout-scope-closure.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
                     <h1><a href="/bucknell-contest-3-problems.html" rel="bookmark"
                            title="Permalink to Bucknell比赛的三道题目">Bucknell比赛的三道题目</a></h1>
                 </header>
@@ -203,110 +151,40 @@ D) 0
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="/project-compiler-lab.html" rel="bookmark"
-                           title="Permalink to Project: Compiler Lab">Project: Compiler Lab</a></h1>
+                    <h1><a href="/apriori-algorithm.html" rel="bookmark"
+                           title="Permalink to Apriori Algorithm">Apriori Algorithm</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2015-03-17T00:00:00+08:00">
-                Published: 2015-03-17
+        <abbr class="published" title="2014-11-24T00:00:00+08:00">
+                Published: 2014-11-24
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
         </address>
-<p>In <a href="/category/project.html">project</a>. </p>
+<p>In <a href="/category/algorithm.html">algorithm</a>. </p>
 
-</footer><!-- /.post-info -->                <ul>
-<li>Compiler-lab: http://compiler-lab.herokuapp.com/</li>
-<li>Github: <a href="https://github.com/yyypasserby/lexical_analysis_visualization">Automata Visualization in Lex</a></li>
+</footer><!-- /.post-info -->                <p>在大规模数据集中寻找关系：</p>
+<ul>
+<li>频繁项集：经常出现在一块的物品的集合</li>
+<li>关联规则：暗示两种物品之间可能存在很强的关系</li>
 </ul>
-<p><img alt="la-index" src="/images/works/la-index.png" />
-<img alt="la-diagrams" src="/images/works/la-diagrams.png" /></p>
-                <a class="readmore" href="/project-compiler-lab.html">read more</a>
-<p>There are <a href="/project-compiler-lab.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/project-online-bookshop.html" rel="bookmark"
-                           title="Permalink to Project: Online Bookshop">Project: Online Bookshop</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-03-17T00:00:00+08:00">
-                Published: 2015-03-17
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
-        </address>
-<p>In <a href="/category/project.html">project</a>. </p>
-
-</footer><!-- /.post-info -->                <ul>
-<li>Online Bookshop: https://online-bookshop.herokuapp.com/</li>
-<li>Github: <a href="https://github.com/yyypasserby/OnlineBookshop">Online Bookshop</a></li>
-</ul>
-<p><img alt="ob-index" src="/images/works/ob-index.png" />
-<img alt="ob-books" src="/images/works/ob-books.png" />
-<img alt="ob-accounts" src="/images/works/ob-accounts.png" />
-<img alt="ob-make-comments" src="/images/works/ob-make-comments.png" />
-<img alt="ob-comments" src="/images/works/ob-comments.png" /></p>
-                <a class="readmore" href="/project-online-bookshop.html">read more</a>
-<p>There are <a href="/project-online-bookshop.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/how-to-use-shadowsocks.html" rel="bookmark"
-                           title="Permalink to How to use Shadowsocks?">How to use Shadowsocks?</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-01-26T00:00:00+08:00">
-                Published: 2015-01-26
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
-        </address>
-<p>In <a href="/category/settings.html">settings</a>. </p>
-
-</footer><!-- /.post-info -->                <p><strong>Shadowsocks</strong> is a secure socks5 proxy which is designed to protect your internet traffic.(from <a href="http://shadowsocks.org/en/index.html">shadowsocks.org</a>)</p>
-<p>To ours to set up your own shadowsocks server, only needs 24 RMB <strong>anually</strong> and a few minutes. This will really helps you when you want to log on your <a href="https://www.facebook.com/">facebook.com</a> or ...</p>
-                <a class="readmore" href="/how-to-use-shadowsocks.html">read more</a>
-<p>There are <a href="/how-to-use-shadowsocks.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/django-on-heroku.html" rel="bookmark"
-                           title="Permalink to Some tips on Deploying Django 1.7 to Heroku">Some tips on Deploying Django 1.7 to Heroku</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2014-12-21T00:00:00+08:00">
-                Published: 2014-12-21
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
-        </address>
-<p>In <a href="/category/settings.html">settings</a>. </p>
-
-</footer><!-- /.post-info -->                <p><a href="https://www.djangoproject.com/">Django 1.7</a> has been long released and its new features of migrations make our web development much easier when dealing with DBs.</p>
-<p><a href="https://www.heroku.com/">Heroku</a> is a PaaS that managed by <a href="http://www.git-scm.com/">git</a> and supports Django. If you are a man that don't want to spend any money on your website ...</p>
-                <a class="readmore" href="/django-on-heroku.html">read more</a>
-<p>There are <a href="/django-on-heroku.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+<p>如何定量地定义关系？如何定义频繁？</p>
+<p>以<strong>啤酒，尿布</strong>的故事为例，</p>
+<ul>
+<li>
+<p>支持度：数据集中包含该项集的记录所占的比例。比如一共有5条交易记录，其中4条出现了<strong>{尿布}</strong>，则尿布的支持度就为<strong>4/5</strong>。再比如，如果数据集中有3条同时出现了<strong>{尿布，啤酒}</strong>，则项集<strong>{尿布，啤酒}</strong>的支持度就为<strong>3/5</strong>。</p>
+</li>
+<li>
+<p>置信度：针对关联规则定义。我们现在知道了<strong>{尿布}</strong>的支持度为<strong>4/5</strong>，<strong>{尿布，啤酒}</strong>的支持度为<strong>3/5</strong>，呢么<strong>{尿布}-&gt;{啤酒}</strong>的关联规则的可信度可以被定义为<strong>“支持度({尿布，啤酒})/支持度({尿布 ...</strong></p></li></ul>
+                <a class="readmore" href="/apriori-algorithm.html">read more</a>
+<p>There are <a href="/apriori-algorithm.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 2
-        <a href="/author/yyypasserby2.html">&raquo;</a>
+    Page 1 / 1
 </p>
                 </section><!-- /#content -->
         <section id="extras" class="body">

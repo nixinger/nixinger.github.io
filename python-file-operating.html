@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+        <meta charset="utf-8" />
+        <title>Python File Operating</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">yyypasserby' blog </a></h1>
+                <nav><ul>
+                    <li><a href="/category/algorithm.html">algorithm</a></li>
+                    <li class="active"><a href="/category/language.html">language</a></li>
+                    <li><a href="/category/project.html">project</a></li>
+                    <li><a href="/category/settings.html">settings</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/python-file-operating.html" rel="bookmark"
+           title="Permalink to Python File Operating">Python File Operating</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-11-24T00:00:00+08:00">
+                Published: 2014-11-24
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yyypasserby.html">yyypasserby</a>
+        </address>
+<p>In <a href="/category/language.html">language</a>. </p>
+
+</footer><!-- /.post-info -->      <p>Python's file operating is so powerful that you may use python to operate your file system as shell did. In the following topics, I will do some introduction of python's file operations.</p>
+<hr />
+<h3>Package</h3>
+<p>We need to import some of the packages provided defaultly by python. All of it is essential and useful.</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
+</pre></div>
+
+
+<h3>Operations</h3>
+<h5>Creation</h5>
+<p>Then we can focus on the file operations. First, let's see how to create a file:</p>
+<div class="highlight"><pre>file = open(&#39;file_to_operate&#39;, &#39;w&#39;)
+</pre></div>
+
+
+<p>There are several attributes to use in the open function:</p>
+<ul>
+<li>r -&gt; (read)</li>
+<li>a -&gt; (append)</li>
+<li>w -&gt; (write)</li>
+</ul>
+<p>And I think it is really easy to understand.</p>
+<p>If you need to do it more safely, you could do this first:</p>
+<div class="highlight"><pre>if not os.path.exists(&#39;file_to_create&#39;):
+    ...
+</pre></div>
+
+
+<p>the exists function will tell you if in your working directory the file you wanna create is already in. </p>
+<h5>Read</h5>
+<p>Reading things from file can make our program run more flexible and easy to modify. It is also very easy to read characters from an existing file. You could also use the knowledge learnt above to check if the file to read exsits.</p>
+<p>There are several function to implements this work. All of them is likely to each other, we choose two of them to make a discussion.</p>
+<p>First,</p>
+<div class="highlight"><pre>str_content = file.read()
+</pre></div>
+
+
+<p>read() function is the basis function to read things from a file. You could read all the things out. Somethings like jsons can be easily obtained and used in the following program.</p>
+<p>Second,</p>
+<div class="highlight"><pre>str_content = file.readlines()
+</pre></div>
+
+
+<p>readlines() function just do a little more things to the read operation. It provides you a line-style view of the file. If your file luckily stores with lines, you would really appreciate it.</p>
+<p><strong>Attention: readlines function would also count \n(or \r\n in windows) into a string line, you should take this into account.</strong></p>
+<h5>Close</h5>
+<p>If you have already learnt c/cpp before you learn python, this close operation must be familiar to you. The file handler is a resource of an system, we need to return it to the os if you no longer require it.</p>
+<div class="highlight"><pre>f.close()
+</pre></div>
+
+
+<p>Easy, right?</p>
+<hr />
+<p>The topic of python file operation would be updated when I encounter some more diffult requirements. </p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="/files/resume.pdf">Resume</a></li>
+                            <li><a href="/files/leetcode_algorithm.json">leetcode_algorithm.json</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://github.com/nixinger">github/nixinger</a></li>
+                            <li><a href="http://weibo.com/nixingwuwei">weibo/nixingwuwei</a></li>
+                            <li><a href="mailto:nixingwuwei@gmail.com">mail/Yao Yiyun</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <!--<footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                </address>[> /#about <]
+
+        </footer>[> /#contentinfo <]-->
+
+<!---->
+<script type="text/javascript">
+    var disqus_shortname = 'yyypasserbysblog';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
